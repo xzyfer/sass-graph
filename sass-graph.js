@@ -1,0 +1,131 @@
+'use strict';
+
+var fs = require('fs');
+var path = require('path');
+var _ = require('lodash');
+var glob = require('glob');
+
+// parses imports from sass
+function parseImports(content) {
+  var re = /\@import (["'])(.+?)\1;/g, match = {}, results = [];
+  // strip comments
+  content = new String(content).replace(/\/\*.+?\*\/|\/\/.*(?=[\n\r])/g, '');
+  // extract imports
+  while (match = re.exec(content)) {
+    results.push(match[2]);
+  }
+
+  return results;
+}
+
+// resolve a sass module to a path
+function resolveSassPath(path, loadPaths) {
+  // trim any file extensions
+  path = path.replace(/\.\w+$/, '');
+  // check all load paths
+  for(var p in loadPaths) {
+    var scssPath = loadPaths[p] + "/" + path + ".scss"
+    if (fs.existsSync(scssPath)) {
+      return scssPath;
+    }
+    // special case for _partials
+    var partialPath = scssPath.replace(/\/([^\/]*)$/, '/_$1');
+    if (fs.existsSync(partialPath)) {
+      return partialPath
+    }
+  }
+
+  throw "Failed to resolve " + path + " in [" + loadPaths + "]";
+}
+
+function Graph(loadPaths, dir) {
+  this.dir = dir;
+  this.loadPaths = loadPaths;
+  this.index = {};
+
+  if(dir) {
+    var graph = this;
+    _(glob.sync(dir+"/**/*.scss", {})).forEach(function(file) {
+      graph.addFile(file);
+    });
+  }
+}
+
+// add a sass file to the graph
+Graph.prototype.addFile = function(filepath, parent) {
+  var entry = this.index[filepath] = this.index[filepath] || {
+    imports: [],
+    importedBy: [],
+    modified: fs.statSync(filepath).mtime
+  };
+
+  var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
+  var cwd = path.dirname(filepath)
+
+  for (var i in imports) {
+    var resolved = resolveSassPath(imports[i], this.loadPaths.concat([this.dir, cwd]));
+    if (!resolved) return false;
+
+    // recurse into dependencies if not already enumerated
+    if(!_.contains(entry.imports, resolved)) {
+      entry.imports.push(resolved);
+      this.addFile(resolved, filepath);
+    }
+  }
+
+  // add link back to parent
+  if(parent != null) {
+    entry.importedBy.push(parent);
+  }
+};
+
+// visits all files that are ancestors of the provided file
+Graph.prototype.visitAncestors = function(filepath, callback) {
+  this.visit(filepath, callback, function(node) {
+    return node.importedBy;
+  });
+};
+
+// visits all files that are descendents of the provided file
+Graph.prototype.visitDescendents = function(filepath, callback) {
+  this.visit(filepath, callback, function(node) {
+    return node.imports;
+  });
+};
+
+// a generic visitor that uses an edgeCallback to find the edges to traverse for a node
+Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
+  var visited = visited || [];
+  if(!this.index.hasOwnProperty(filepath)) {
+    throw "Graph doesn't contain "+filepath;
+  }
+  var edges = edgeCallback(this.index[filepath]);
+  for(var i in edges) {
+    if(!_.contains(visited, edges[i])) {
+      visited.push(edges[i]);
+      callback(edges[i], this.index[edges[i]]);
+      this.visit(edges[i], callback, edgeCallback, visited);
+    }
+  }
+};
+
+function processOptions(options) {
+  options = options || {};
+  if(!options.hasOwnProperty('loadPaths')) options['loadPaths'] = [];
+  return options;
+}
+
+module.exports.parseFile = function(filepath, options) {
+  var filepath = path.resolve(filepath);
+  var options = processOptions(options);
+  var graph = new Graph(options.loadPaths);
+  graph.addFile(filepath);
+  return graph;
+};
+
+module.exports.parseDir = function(dirpath, options) {
+  var dirpath = path.resolve(dirpath);
+  var options = processOptions(options);
+  var graph = new Graph(options.loadPaths, dirpath);
+  return graph;
+};

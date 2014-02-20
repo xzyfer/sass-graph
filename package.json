@@ -1,0 +1,28 @@
+{
+  "name": "sass-graph",
+  "version": "0.1.0",
+  "description": "Parse sass files and extract a graph of imports",
+  "license": "MIT",
+  "repository": "lox/sass-graph",
+  "author": {
+    "name": "Lachlan Donald",
+    "email": "lachlan@ljd.cc",
+    "url": "https://lachlan.me"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "directories": {
+    "bin": "./bin"
+  },
+  "keywords": [
+    "sass",
+    "graph"
+  ],
+  "dependencies": {
+    "glob": "~3.2.8",
+    "lodash": "~2.4.1",
+    "commander": "~2.1.0"
+  },
+  "devDependencies": {}
+}
