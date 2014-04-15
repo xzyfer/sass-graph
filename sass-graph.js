@@ -19,12 +19,12 @@ function parseImports(content) {
 }
 
 // resolve a sass module to a path
-function resolveSassPath(path, loadPaths) {
+function resolveSassPath(sassPath, loadPaths) {
   // trim any file extensions
-  path = path.replace(/\.\w+$/, '');
+  sassPath = sassPath.replace(/\.\w+$/, '');
   // check all load paths
   for(var p in loadPaths) {
-    var scssPath = loadPaths[p] + "/" + path + ".scss"
+    var scssPath = path.normalize(loadPaths[p] + "/" + sassPath + ".scss");
     if (fs.existsSync(scssPath)) {
       return scssPath;
     }
