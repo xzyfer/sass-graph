@@ -1,6 +1,6 @@
 {
   "name": "sass-graph",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parse sass files and extract a graph of imports",
   "license": "MIT",
   "repository": "lox/sass-graph",
