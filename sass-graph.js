@@ -46,7 +46,7 @@ function Graph(loadPaths, dir) {
   if(dir) {
     var graph = this;
     _(glob.sync(dir+"/**/*.scss", {})).forEach(function(file) {
-      graph.addFile(file);
+      graph.addFile(path.resolve(file));
     });
   }
 }
