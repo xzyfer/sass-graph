@@ -4,19 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
 var glob = require('glob');
-
-// parses imports from sass
-function parseImports(content) {
-  var re = /\@import (["'])(.+?)\1;/g, match = {}, results = [];
-  // strip comments
-  content = new String(content).replace(/\/\*.+?\*\/|\/\/.*(?=[\n\r])/g, '');
-  // extract imports
-  while (match = re.exec(content)) {
-    results.push(match[2]);
-  }
-
-  return results;
-}
+var parseImports = require('./parse-imports');
 
 // resolve a sass module to a path
 function resolveSassPath(sassPath, loadPaths) {
