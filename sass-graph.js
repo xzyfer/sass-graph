@@ -9,10 +9,10 @@ var parseImports = require('./parse-imports');
 // resolve a sass module to a path
 function resolveSassPath(sassPath, loadPaths) {
   // trim any file extensions
-  sassPath = sassPath.replace(/\.\w+$/, '');
+  var sassPathName = sassPath.replace(/\.\w+$/, '');
   // check all load paths
   for(var p in loadPaths) {
-    var scssPath = path.normalize(loadPaths[p] + "/" + sassPath + ".scss");
+    var scssPath = path.normalize(loadPaths[p] + "/" + sassPathName + ".scss");
     if (fs.existsSync(scssPath)) {
       return scssPath;
     }
@@ -22,8 +22,8 @@ function resolveSassPath(sassPath, loadPaths) {
       return partialPath
     }
   }
-
-  throw "Failed to resolve " + path + " in [" + loadPaths + "]";
+  var errMsg = "Cann't find module " + sassPath;
+  throw errMsg;
 }
 
 function Graph(loadPaths, dir) {
@@ -51,7 +51,12 @@ Graph.prototype.addFile = function(filepath, parent) {
   var cwd = path.dirname(filepath)
 
   for (var i in imports) {
-    var resolved = resolveSassPath(imports[i], this.loadPaths.concat([this.dir, cwd]));
+    [this.dir, cwd].forEach(function (path) {
+      if (path) {
+        this.loadPaths.push(path);
+      }
+    }.bind(this));
+    var resolved = resolveSassPath(imports[i], _.uniq(this.loadPaths));
     if (!resolved) return false;
 
     // recurse into dependencies if not already enumerated
