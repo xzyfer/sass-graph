@@ -22,7 +22,7 @@ function resolveSassPath(sassPath, loadPaths) {
       return partialPath
     }
   }
-  var errMsg = "Cann't find module " + sassPath;
+  var errMsg = "File to import not found or unreadable: " + sassPath;
   throw errMsg;
 }
 
