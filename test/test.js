@@ -71,7 +71,7 @@ describe('sass-graph', function(){
       try {
         var graph = sassGraph.parseFile(files['d.scss']);
       } catch (e) {
-        assert.equal(e, "Cann't find module e");
+        assert.equal(e, "File to import not found or unreadable: e");
       }
       
     }); 
