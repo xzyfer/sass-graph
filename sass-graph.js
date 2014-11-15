@@ -17,7 +17,7 @@ function resolveSassPath(sassPath, loadPaths) {
       return scssPath;
     }
     // special case for _partials
-    var partialPath = scssPath.replace(/\/([^\/]*)$/, '/_$1');
+    var partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
     if (fs.existsSync(partialPath)) {
       return partialPath
     }
@@ -34,7 +34,7 @@ function Graph(loadPaths, dir) {
   if(dir) {
     var graph = this;
     _(glob.sync(dir+"/**/*.scss", {})).forEach(function(file) {
-      graph.addFile(file);
+      graph.addFile(path.resolve(file));
     });
   }
 }
