@@ -2,7 +2,7 @@
 var assert = require("assert");
 var path = require("path");
 
-var fixtures = path.resolve("test/fixtures");
+var fixtures = path.resolve("test/fixtures/basic");
 var files = {
   'a.scss': fixtures + "/a.scss",
   'b.scss': fixtures + "/b.scss",
@@ -10,7 +10,7 @@ var files = {
   'd.scss': fixtures + "/d.scss",
   '_e.scss': fixtures + "/components/_e.scss"
 }
- 
+
 describe('sass-graph', function(){
   var sassGraph = require("../sass-graph");
 
@@ -50,7 +50,7 @@ describe('sass-graph', function(){
         assert.notEqual(expectedDescendents.indexOf(imp), -1);
       });
       assert.equal(expectedDescendents.length, descendents.length);
-    }); 
+    });
   });
 
   describe('parseFile', function () {
@@ -63,7 +63,7 @@ describe('sass-graph', function(){
         assert.notEqual(expectedDescendents.indexOf(imp), -1);
       });
       assert.equal(expectedDescendents.length, descendents.length);
-    }); 
+    });
   });
 
   describe('parseFile', function () {
@@ -73,8 +73,8 @@ describe('sass-graph', function(){
       } catch (e) {
         assert.equal(e, "File to import not found or unreadable: e");
       }
-      
-    }); 
+
+    });
   });
 
 });

@@ -21,9 +21,11 @@
     "graph"
   ],
   "dependencies": {
+    "commander": "~2.1.0",
+    "deep-equal": "^0.2.1",
     "glob": "~3.2.8",
-    "lodash": "~2.4.1",
-    "commander": "~2.1.0"
+    "gonzales-pe": "^3.0.0-12",
+    "lodash": "~2.4.1"
   },
   "devDependencies": {}
 }
