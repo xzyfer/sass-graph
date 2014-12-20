@@ -1,0 +1,11 @@
+@import "b";
+
+.class {
+  .nested-class {
+    @import "c",
+    // multiline nested import
+    'd';
+    hello: world;
+  }
+  @import "e";
+}

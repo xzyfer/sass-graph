@@ -47,7 +47,8 @@ Graph.prototype.addFile = function(filepath, parent) {
     modified: fs.statSync(filepath).mtime
   };
 
-  var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
+  var syntax = toFileSyntax(filepath);
+  var imports = parseImports(fs.readFileSync(filepath, 'utf-8'), syntax);
   var cwd = path.dirname(filepath)
 
   for (var i in imports) {
@@ -122,3 +123,9 @@ module.exports.parseDir = function(dirpath, options) {
   var graph = new Graph(options.loadPaths, dirpath);
   return graph;
 };
+
+function toFileSyntax(filename) {
+  var ext = path.extname(filename);
+  var dotless = ext.replace(/\./g, '');
+  return dotless.toLowerCase();
+}

@@ -1,0 +1,12 @@
+@import
+ // b imports c
+"b",
+
+ /** don't import a:
+ "a",
+ */
+
+ // don't import d: "d",
+
+ // e imports nothing else
+'e';
