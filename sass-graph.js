@@ -47,12 +47,13 @@ Graph.prototype.addFile = function(filepath, parent) {
     modified: fs.statSync(filepath).mtime
   };
 
+  var resolvedParent;
   var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
-  var cwd = path.dirname(filepath)
+  var cwd = path.dirname(filepath);
 
   for (var i in imports) {
     [this.dir, cwd].forEach(function (path) {
-      if (path) {
+      if (path && this.loadPaths.indexOf(path) === -1) {
         this.loadPaths.push(path);
       }
     }.bind(this));
@@ -62,13 +63,17 @@ Graph.prototype.addFile = function(filepath, parent) {
     // recurse into dependencies if not already enumerated
     if(!_.contains(entry.imports, resolved)) {
       entry.imports.push(resolved);
-      this.addFile(resolved, filepath);
+      this.addFile(fs.realpathSync(resolved), filepath);
     }
   }
 
   // add link back to parent
-  if(parent != null) {
-    entry.importedBy.push(parent);
+  if(parent) {
+    resolvedParent = _.find(this.loadPaths, function(path) {
+      return parent.indexOf(path) !== -1;
+    }) || parent;
+    resolvedParent = parent.substr(parent.indexOf(resolvedParent)).replace(/^\/*/, '');
+    entry.importedBy.push(resolvedParent);
   }
 };
 
@@ -88,6 +93,7 @@ Graph.prototype.visitDescendents = function(filepath, callback) {
 
 // a generic visitor that uses an edgeCallback to find the edges to traverse for a node
 Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
+  filepath = fs.realpathSync(filepath);
   var visited = visited || [];
   if(!this.index.hasOwnProperty(filepath)) {
     throw "Graph doesn't contain "+filepath;
