@@ -85,14 +85,16 @@ Graph.prototype.addFile = function(filepath, parent) {
 
 // visits all files that are ancestors of the provided file
 Graph.prototype.visitAncestors = function(filepath, callback) {
-  this.visit(filepath, callback, function(node) {
+  this.visit(filepath, callback, function(err, node) {
+    if (err || !node) return [];
     return node.importedBy;
   });
 };
 
 // visits all files that are descendents of the provided file
 Graph.prototype.visitDescendents = function(filepath, callback) {
-  this.visit(filepath, callback, function(node) {
+  this.visit(filepath, callback, function(err, node) {
+    if (err || !node) return [];
     return node.imports;
   });
 };
@@ -102,9 +104,9 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
   filepath = fs.realpathSync(filepath);
   var visited = visited || [];
   if(!this.index.hasOwnProperty(filepath)) {
-    throw "Graph doesn't contain "+filepath;
+    edgeCallback("Graph doesn't contain " + filepath, null);
   }
-  var edges = edgeCallback(this.index[filepath]);
+  var edges = edgeCallback(null, this.index[filepath]);
   for(var i in edges) {
     if(!_.contains(visited, edges[i])) {
       visited.push(edges[i]);
