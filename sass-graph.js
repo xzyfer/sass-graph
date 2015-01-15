@@ -71,8 +71,14 @@ Graph.prototype.addFile = function(filepath, parent) {
   if(parent) {
     resolvedParent = _.find(this.loadPaths, function(path) {
       return parent.indexOf(path) !== -1;
-    }) || parent;
-    resolvedParent = parent.substr(parent.indexOf(resolvedParent)).replace(/^\/*/, '');
+    });
+
+    if (resolvedParent) {
+      resolvedParent = parent.substr(parent.indexOf(resolvedParent));//.replace(/^\/*/, '');
+    } else {
+      resolvedParent = parent;
+    }
+
     entry.importedBy.push(resolvedParent);
   }
 };
