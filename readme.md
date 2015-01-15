@@ -43,6 +43,11 @@ The command line tool will parse a graph and then either display ancestors, desc
     tests/fixtures/b.scss
     tests/fixtures/_c.scss
 
+## Authors
+
+Sass graph was originally written by [Lachlan Donald](http://lachlan.me).
+It is now maintained by [Michael Mifsud](http://twitter.com/xzyfer).
+
 ## License
 
-MIT © [Lachlan Donald](http://lachlan.me)
+MIT
