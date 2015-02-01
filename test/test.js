@@ -8,7 +8,8 @@ var files = {
   'b.scss': fixtures + "/b.scss",
   '_c.scss': fixtures + "/_c.scss",
   'd.scss': fixtures + "/d.scss",
-  '_e.scss': fixtures + "/components/_e.scss"
+  '_e.scss': fixtures + "/components/_e.scss",
+  'f.scss': fixtures + "/f.scss"
 }
 
 describe('sass-graph', function(){
@@ -74,4 +75,16 @@ describe('sass-graph', function(){
     });
   });
 
+  describe('parseFile', function () {
+    it('should not throw an error for a file with no dependencies with Array having added functions', function () {
+      try {
+        Array.prototype.foo = function() {
+          return false;
+        }
+        var graph = sassGraph.parseFile(files['f.scss']);
+      } catch (e) {
+        assert.fail("Error: " + e);
+      }
+    });
+  });
 });
