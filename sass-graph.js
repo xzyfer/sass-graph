@@ -11,17 +11,25 @@ function resolveSassPath(sassPath, loadPaths) {
   // trim any file extensions
   var sassPathName = sassPath.replace(/\.\w+$/, '');
   // check all load paths
-  for(var p in loadPaths) {
-    var scssPath = path.normalize(loadPaths[p] + "/" + sassPathName + ".scss");
+  var result = [];
+  _(loadPaths).forEach(function(aPath) {
+    var scssPath = path.normalize(aPath + "/" + sassPathName + ".scss");
     if (fs.existsSync(scssPath)) {
-      return scssPath;
+      result.push(scssPath);
+      return false;
     }
     // special case for _partials
     var partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
     if (fs.existsSync(partialPath)) {
-      return partialPath
+      result.push(partialPath);
+      return false;
     }
+  }, this);
+
+  if (result.length == 1) {
+    return result[0];
   }
+
   var errMsg = "File to import not found or unreadable: " + sassPath;
   throw errMsg;
 }
@@ -51,20 +59,29 @@ Graph.prototype.addFile = function(filepath, parent) {
   var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
   var cwd = path.dirname(filepath);
 
-  for (var i in imports) {
+  var iterationResult = [];
+  _(imports).forEach(function(anImport) {
     [this.dir, cwd].forEach(function (path) {
       if (path && this.loadPaths.indexOf(path) === -1) {
         this.loadPaths.push(path);
       }
-    }.bind(this));
-    var resolved = resolveSassPath(imports[i], _.uniq(this.loadPaths));
-    if (!resolved) return false;
+    }, this);
+
+    var resolved = resolveSassPath(anImport, _.uniq(this.loadPaths));
+    if (!resolved) {
+      iterationResult.push(false);
+      return false;
+    }
 
     // recurse into dependencies if not already enumerated
     if(!_.contains(entry.imports, resolved)) {
       entry.imports.push(resolved);
       this.addFile(fs.realpathSync(resolved), filepath);
     }
+  }, this);
+
+  if (iterationResult.length == 1) {
+    return false;
   }
 
   // add link back to parent
@@ -107,13 +124,13 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
     edgeCallback("Graph doesn't contain " + filepath, null);
   }
   var edges = edgeCallback(null, this.index[filepath]);
-  for(var i in edges) {
-    if(!_.contains(visited, edges[i])) {
-      visited.push(edges[i]);
-      callback(edges[i], this.index[edges[i]]);
-      this.visit(edges[i], callback, edgeCallback, visited);
+  _(edges).forEach(function(edge) {
+    if(!_.contains(visited, edge)) {
+      visited.push(edge);
+      callback(edge, this.index[edge]);
+      this.visit(edge, callback, edgeCallback, visited);
     }
-  }
+  }, this);
 };
 
 function processOptions(options) {
