@@ -11,9 +11,9 @@ function resolveSassPath(sassPath, loadPaths) {
   // trim any file extensions
   var sassPathName = sassPath.replace(/\.\w+$/, '');
   // check all load paths
-  for(var p in loadPaths) {
-    if (!loadPaths.hasOwnProperty(p)) continue;
-    var scssPath = path.normalize(loadPaths[p] + "/" + sassPathName + ".scss");
+  var i, length = loadPaths.length;
+  for(i = 0; i < length; i++) {
+    var scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + ".scss");
     if (fs.existsSync(scssPath)) {
       return scssPath;
     }
@@ -52,8 +52,8 @@ Graph.prototype.addFile = function(filepath, parent) {
   var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
   var cwd = path.dirname(filepath);
 
-  for (var i in imports) {
-    if (!imports.hasOwnProperty(i)) continue;
+  var i, length = imports.length;
+  for (i = 0; i < length; i++) {
     [this.dir, cwd].forEach(function (path) {
       if (path && this.loadPaths.indexOf(path) === -1) {
         this.loadPaths.push(path);
@@ -109,8 +109,9 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
     edgeCallback("Graph doesn't contain " + filepath, null);
   }
   var edges = edgeCallback(null, this.index[filepath]);
-  for(var i in edges) {
-    if (!edges.hasOwnProperty(i)) continue;
+
+  var i, length = edges.length;
+  for (i = 0; i < length; i++) {
     if(!_.contains(visited, edges[i])) {
       visited.push(edges[i]);
       callback(edges[i], this.index[edges[i]]);
