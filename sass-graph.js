@@ -12,6 +12,7 @@ function resolveSassPath(sassPath, loadPaths) {
   var sassPathName = sassPath.replace(/\.\w+$/, '');
   // check all load paths
   for(var p in loadPaths) {
+    if (!loadPaths.hasOwnProperty(p)) continue;
     var scssPath = path.normalize(loadPaths[p] + "/" + sassPathName + ".scss");
     if (fs.existsSync(scssPath)) {
       return scssPath;
@@ -52,6 +53,7 @@ Graph.prototype.addFile = function(filepath, parent) {
   var cwd = path.dirname(filepath);
 
   for (var i in imports) {
+    if (!imports.hasOwnProperty(i)) continue;
     [this.dir, cwd].forEach(function (path) {
       if (path && this.loadPaths.indexOf(path) === -1) {
         this.loadPaths.push(path);
@@ -108,6 +110,7 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
   }
   var edges = edgeCallback(null, this.index[filepath]);
   for(var i in edges) {
+    if (!edges.hasOwnProperty(i)) continue;
     if(!_.contains(visited, edges[i])) {
       visited.push(edges[i]);
       callback(edges[i], this.index[edges[i]]);
