@@ -20,7 +20,7 @@ function resolveSassPath(sassPath, loadPaths) {
     // special case for _partials
     var partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
     if (fs.existsSync(partialPath)) {
-      return partialPath
+      return partialPath;
     }
   }
   var errMsg = "File to import not found or unreadable: " + sassPath;
@@ -54,12 +54,8 @@ Graph.prototype.addFile = function(filepath, parent) {
 
   var i, length = imports.length;
   for (i = 0; i < length; i++) {
-    [this.dir, cwd].forEach(function (path) {
-      if (path && this.loadPaths.indexOf(path) === -1) {
-        this.loadPaths.push(path);
-      }
-    }.bind(this));
-    var resolved = resolveSassPath(imports[i], _.uniq(this.loadPaths));
+    var loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
+    var resolved = resolveSassPath(imports[i], loadPaths);
     if (!resolved) return false;
 
     // recurse into dependencies if not already enumerated

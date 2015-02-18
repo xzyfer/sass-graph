@@ -8,15 +8,17 @@ var files = {
   'b.scss': fixtures + "/b.scss",
   '_c.scss': fixtures + "/_c.scss",
   'd.scss': fixtures + "/d.scss",
-  '_e.scss': fixtures + "/components/_e.scss",
-  'f.scss': fixtures + "/f.scss"
+  'f.scss': fixtures + "/f.scss",
+  'dirA/_e.scss': fixtures + "/dirA/_e.scss",
+  'dirB/_e.scss': fixtures + "/dirB/_e.scss",
+  'dirB/g.scss': fixtures + "/dirB/g.scss"
 }
 
 describe('sass-graph', function(){
   var sassGraph = require("../sass-graph");
 
   describe('parsing a graph of all scss files', function(){
-    var graph = sassGraph.parseDir(fixtures, {loadPaths: [fixtures + '/components']});
+    var graph = sassGraph.parseDir(fixtures, {loadPaths: [fixtures + '/dirA', fixtures + '/dirB']});
 
     it('should have all files', function(){
       assert.equal(Object.keys(files).length, Object.keys(graph.index).length);
@@ -28,6 +30,10 @@ describe('sass-graph', function(){
 
     it('should have the correct importedBy for _c.scss', function() {
       assert.deepEqual([files['b.scss']], graph.index[files['_c.scss']].importedBy);
+    });
+
+    it('should have the correct imports for g.scss', function() {
+      assert.deepEqual([files['dirB/_e.scss']], graph.index[files['dirB/g.scss']].imports);
     });
 
     it('should traverse ancestors of _c.scss', function() {
@@ -54,8 +60,8 @@ describe('sass-graph', function(){
 
   describe('parseFile', function () {
     it('should parse imports with loadPaths', function () {
-      var graph = sassGraph.parseFile(files['d.scss'], {loadPaths: [fixtures + '/components']} );
-      var expectedDescendents = [files['_e.scss']];
+      var graph = sassGraph.parseFile(files['d.scss'], {loadPaths: [fixtures + '/dirA']} );
+      var expectedDescendents = [files['dirA/_e.scss']];
       var descendents = [];
       graph.visitDescendents(files['d.scss'], function (imp) {
         descendents.push(imp);
