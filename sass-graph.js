@@ -15,21 +15,24 @@ function resolvePath(module, loadPaths, extensions) {
   // check all load paths
   var i, length = loadPaths.length;
   for(i = 0; i < length; i++) {
+    var exists = false;
+    var modulePath;
+
     // Check if module exists based on excepted file extensions
-    var modulePath = null;
-    var exists = extensions.some(function(ext) {
+    exists = extensions.some(function(ext) {
       modulePath = path.normalize(loadPaths[i] + "/" + modulePathName + ext);
-      return fs.existsSync(modulePath);
+
+      if (fs.existsSync(modulePath)) {
+        return true;
+      } else {
+        // Check if partial exists ('_' prefixed module)
+        modulePath = path.join(path.dirname(modulePath), "_" + path.basename(modulePath));
+        return fs.existsSync(modulePath);
+      }
     });
 
     if (exists) {
       return modulePath;
-    }
-
-    // special case for _partials
-    var partialPath = path.join(path.dirname(modulePath), "_" + path.basename(modulePath));
-    if (fs.existsSync(partialPath)) {
-      return partialPath;
     }
   }
   var errMsg = "File to import not found or unreadable: " + module;
