@@ -10,7 +10,7 @@
     "bin": "./bin"
   },
   "scripts": {
-    "test": "mocha ./test/test.js"
+    "test": "mocha"
   },
   "keywords": [
     "sass",
