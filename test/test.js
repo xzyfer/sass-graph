@@ -20,7 +20,7 @@ describe('sass-graph', function(){
 
     it('should have all files', function(){
       assert.equal(Object.keys(files).length, Object.keys(graph.index).length);
-    })
+    });
 
     it('should have the correct imports for a.scss', function() {
       assert.deepEqual([files['b.scss']], graph.index[files['a.scss']].imports);
@@ -31,13 +31,13 @@ describe('sass-graph', function(){
     });
 
     it('should traverse ancestors of _c.scss', function() {
-      ancestors = [];
+      var ancestors = [];
       graph.visitAncestors(files['_c.scss'], function(k) {
         ancestors.push(k);
-      })
+      });
       assert.deepEqual([files['b.scss'], files['a.scss']], ancestors);
     });
-  })
+  });
 
   describe('parseFile', function () {
     it('should parse imports', function () {
@@ -80,7 +80,7 @@ describe('sass-graph', function(){
       try {
         Array.prototype.foo = function() {
           return false;
-        }
+        };
         var graph = sassGraph.parseFile(files['f.scss']);
       } catch (e) {
         assert.fail("Error: " + e);
