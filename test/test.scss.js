@@ -10,7 +10,7 @@ var files = {
   'd.scss': fixtures + "/d.scss",
   '_e.scss': fixtures + "/components/_e.scss",
   'f.scss': fixtures + "/f.scss"
-}
+};
 
 describe('sass-graph', function(){
   var sassGraph = require("../sass-graph");
