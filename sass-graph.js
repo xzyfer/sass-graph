@@ -5,36 +5,48 @@ var path = require('path');
 var _ = require('lodash');
 var glob = require('glob');
 var parseImports = require('./parse-imports');
+var util = require('util');
 
-// resolve a sass module to a path
-function resolveSassPath(sassPath, loadPaths) {
+
+// resolve a module to a path
+function resolvePath(module, loadPaths, extensions) {
   // trim any file extensions
-  var sassPathName = sassPath.replace(/\.\w+$/, '');
+  var modulePathName = module.replace(/\.\w+$/, '');
   // check all load paths
   var i, length = loadPaths.length;
   for(i = 0; i < length; i++) {
-    var scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + ".scss");
-    if (fs.existsSync(scssPath)) {
-      return scssPath;
+    // Check if module exists based on excepted file extensions
+    var modulePath = null;
+    var exists = extensions.some(function(ext) {
+      modulePath = path.normalize(loadPaths[i] + "/" + modulePathName + ext);
+      return fs.existsSync(modulePath);
+    });
+
+    if (exists) {
+      return modulePath;
     }
+
     // special case for _partials
-    var partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
+    var partialPath = path.join(path.dirname(modulePath), "_" + path.basename(modulePath));
     if (fs.existsSync(partialPath)) {
-      return partialPath
+      return partialPath;
     }
   }
-  var errMsg = "File to import not found or unreadable: " + sassPath;
+  var errMsg = "File to import not found or unreadable: " + module;
   throw errMsg;
 }
 
-function Graph(loadPaths, dir) {
+function Graph(loadPaths, dir, extensions) {
   this.dir = dir;
   this.loadPaths = loadPaths;
   this.index = {};
+  this.extensions = extensions;
 
   if(dir) {
     var graph = this;
-    _(glob.sync(dir+"/**/*.scss", {})).forEach(function(file) {
+    var fileGlob = path.join(dir, util.format("/**/*+(%s)", this.extensions.join('|')));
+
+    _(glob.sync(fileGlob, {})).forEach(function(file) {
       graph.addFile(path.resolve(file));
     });
   }
@@ -59,7 +71,7 @@ Graph.prototype.addFile = function(filepath, parent) {
         this.loadPaths.push(path);
       }
     }.bind(this));
-    var resolved = resolveSassPath(imports[i], _.uniq(this.loadPaths));
+    var resolved = resolvePath(imports[i], _.uniq(this.loadPaths), this.extensions);
     if (!resolved) return false;
 
     // recurse into dependencies if not already enumerated
@@ -122,14 +134,24 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 
 function processOptions(options) {
   options = options || {};
-  if(!options.hasOwnProperty('loadPaths')) options['loadPaths'] = [];
+
+  if(!options.hasOwnProperty('loadPaths')) {
+    options['loadPaths'] = [];
+  }
+
+  if(!options.hasOwnProperty('extensions')) {
+    options['extensions'] = ['.scss'];
+  } else if (typeof(options.extensions) === 'string') {
+    options['extensions'] = [options.extensions];
+  }
+
   return options;
 }
 
 module.exports.parseFile = function(filepath, options) {
   var filepath = path.resolve(filepath);
   var options = processOptions(options);
-  var graph = new Graph(options.loadPaths);
+  var graph = new Graph(options.loadPaths, null, options.extensions);
   graph.addFile(filepath);
   return graph;
 };
@@ -137,6 +159,6 @@ module.exports.parseFile = function(filepath, options) {
 module.exports.parseDir = function(dirpath, options) {
   var dirpath = path.resolve(dirpath);
   var options = processOptions(options);
-  var graph = new Graph(options.loadPaths, dirpath);
+  var graph = new Graph(options.loadPaths, dirpath, options.extensions);
   return graph;
 };
