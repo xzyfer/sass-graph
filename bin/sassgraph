@@ -20,6 +20,7 @@ program
   .option("-d", "Print descendents")
   .option("--json", "Prints the index in json")
   .option("-v, --version", "Display version information")
+  .option("-e, --extensions [ext]", "File extensions eg .less, .scss, .css", '.scss')
   .parse(process.argv);
 
 if ( ! program.args.length) {
@@ -51,7 +52,10 @@ try {
     process.exit(1);
   }
 
-  var graph = sassGraph.parseDir(sassDir, { loadPaths: loadPaths });
+  var graph = sassGraph.parseDir(sassDir, {
+    loadPaths: loadPaths,
+    extensions: program.extensions
+  });
 
   if(program.json) {
     console.log(JSON.stringify(graph.index, null, 4));
