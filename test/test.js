@@ -2,7 +2,7 @@
 var assert = require("assert");
 var path = require("path");
 
-var fixtures = path.resolve("test/fixtures");
+var fixtures = path.resolve("test/fixtures/scss");
 var files = {
   'a.scss': fixtures + "/a.scss",
   'b.scss': fixtures + "/b.scss",
