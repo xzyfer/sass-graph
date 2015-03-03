@@ -33,7 +33,7 @@ describe('sass-graph', function(){
       assert.deepEqual([files['b.scss']], graph.index[files['_c.scss']].importedBy);
     });
 
-    it('should have the correct (nested) imports for j.scss', function() {
+    it('should have the correct (nested) imports for g.scss', function() {
       var expectedDescendents = [files['_h.scss'], files['_i.scss']];
       var descendents = [];
 
