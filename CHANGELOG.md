@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Whitelist compass imports
 
+### Tests
+- Added a test for nested imports
+
 ## [1.0.3] - 2015-02-02
 ### Fixed
 - Replace incorrect usage of `for..in` loops with simple `for` loops

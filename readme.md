@@ -51,6 +51,15 @@ tests/fixtures/b.scss
 tests/fixtures/_c.scss
 ```
 
+## Running Mocha tests
+
+You can run the tests by executing the following commands:
+
+```
+npm install
+make test
+```
+
 ## Authors
 
 Sass graph was originally written by [Lachlan Donald](http://lachlan.me).
