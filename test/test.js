@@ -9,7 +9,9 @@ var files = {
   '_c.scss': fixtures + "/_c.scss",
   'd.scss': fixtures + "/d.scss",
   '_e.scss': fixtures + "/components/_e.scss",
-  'f.scss': fixtures + "/f.scss"
+  'j.scss': fixtures + "/j.scss",
+  '_k.scss': fixtures + "/compass/_k.scss",
+  '_compass.scss': fixtures + "/components/_compass.scss"
 }
 
 describe('sass-graph', function(){
@@ -28,6 +30,10 @@ describe('sass-graph', function(){
 
     it('should have the correct importedBy for _c.scss', function() {
       assert.deepEqual([files['b.scss']], graph.index[files['_c.scss']].importedBy);
+    });
+
+    it('should ignore compass imports for j.scss', function() {
+      assert.deepEqual([files['_compass.scss'], files['_k.scss']], graph.index[files['j.scss']].imports);
     });
 
     it('should traverse ancestors of _c.scss', function() {

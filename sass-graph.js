@@ -6,14 +6,18 @@ var _ = require('lodash');
 var glob = require('glob');
 var parseImports = require('./parse-imports');
 
+var WHITELIST_COMPASS = 'compass';
+var EXTENSION = '.scss';
+
 // resolve a sass module to a path
 function resolveSassPath(sassPath, loadPaths) {
   // trim any file extensions
   var sassPathName = sassPath.replace(/\.\w+$/, '');
+
   // check all load paths
   var i, length = loadPaths.length;
   for(i = 0; i < length; i++) {
-    var scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + ".scss");
+    var scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + EXTENSION);
     if (fs.existsSync(scssPath)) {
       return scssPath;
     }
@@ -22,6 +26,11 @@ function resolveSassPath(sassPath, loadPaths) {
     if (fs.existsSync(partialPath)) {
       return partialPath
     }
+  }
+
+  // if the import is a compass import (not compass.scss or anything), ignore it
+  if(sassPath.search(WHITELIST_COMPASS) == 0) {
+    return WHITELIST_COMPASS
   }
   var errMsg = "File to import not found or unreadable: " + sassPath;
   throw errMsg;
@@ -34,7 +43,7 @@ function Graph(loadPaths, dir) {
 
   if(dir) {
     var graph = this;
-    _(glob.sync(dir+"/**/*.scss", {})).forEach(function(file) {
+    _(glob.sync(dir+"/**/*" + EXTENSION, {})).forEach(function(file) {
       graph.addFile(path.resolve(file));
     });
   }
@@ -62,10 +71,12 @@ Graph.prototype.addFile = function(filepath, parent) {
     var resolved = resolveSassPath(imports[i], _.uniq(this.loadPaths));
     if (!resolved) return false;
 
-    // recurse into dependencies if not already enumerated
-    if(!_.contains(entry.imports, resolved)) {
-      entry.imports.push(resolved);
-      this.addFile(fs.realpathSync(resolved), filepath);
+    if (resolved != WHITELIST_COMPASS) {
+      // recurse into dependencies if not already enumerated
+      if (!_.contains(entry.imports, resolved)) {
+        entry.imports.push(resolved);
+        this.addFile(fs.realpathSync(resolved), filepath);
+      }
     }
   }
 
