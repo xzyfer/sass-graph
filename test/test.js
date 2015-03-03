@@ -9,7 +9,10 @@ var files = {
   '_c.scss': fixtures + "/_c.scss",
   'd.scss': fixtures + "/d.scss",
   '_e.scss': fixtures + "/components/_e.scss",
-  'f.scss': fixtures + "/f.scss"
+  'f.scss': fixtures + "/f.scss",
+  'g.scss': fixtures + "/g.scss",
+  '_h.scss': fixtures + "/nested/_h.scss",
+  '_i.scss': fixtures + "/nested/_i.scss",
 }
 
 describe('sass-graph', function(){
@@ -28,6 +31,16 @@ describe('sass-graph', function(){
 
     it('should have the correct importedBy for _c.scss', function() {
       assert.deepEqual([files['b.scss']], graph.index[files['_c.scss']].importedBy);
+    });
+
+    it('should have the correct (nested) imports for j.scss', function() {
+      var expectedDescendents = [files['_h.scss'], files['_i.scss']];
+      var descendents = [];
+
+      graph.visitDescendents(files['g.scss'], function (imp) {
+        descendents.push(imp);
+        assert.notEqual(expectedDescendents.indexOf(imp), -1);
+      });
     });
 
     it('should traverse ancestors of _c.scss', function() {
