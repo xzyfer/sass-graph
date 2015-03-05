@@ -1,0 +1,2 @@
+/*Exists to verify a.css is imported and not a.scss*/
+body .some-thing2{ color: blue; }

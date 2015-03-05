@@ -5,12 +5,16 @@ var path = require("path");
 var fixtures = path.resolve("test/fixtures");
 var files = {
   'a.scss': fixtures + "/a.scss",
+  'a.css': fixtures + "/a.css",
   'b.scss': fixtures + "/b.scss",
   '_c.scss': fixtures + "/_c.scss",
   'd.scss': fixtures + "/d.scss",
   '_e.scss': fixtures + "/components/_e.scss",
-  'f.scss': fixtures + "/f.scss"
-}
+  'f.scss': fixtures + "/f.scss",
+  'g.scss': fixtures + '/g.scss',
+  'z.css': fixtures + '/z.css',
+  'foo.bar': fixtures + '/foo.bar'
+};
 
 describe('sass-graph', function(){
   var sassGraph = require("../sass-graph");
@@ -37,7 +41,21 @@ describe('sass-graph', function(){
       })
       assert.deepEqual([files['b.scss'], files['a.scss']], ancestors);
     });
-  })
+  });
+
+  describe('parseFile', function () {
+    it('should include any file that actually exists if explicitly imported', function() {
+      var graph = sassGraph.parseFile(files['g.scss']);
+      var expectedDescendents = [files['a.css'], files['z.css'], files['foo.bar']];
+      var descendents = [];
+      graph.visitDescendents(files['g.scss'], function (imp) {
+        descendents.push(imp);
+        assert.notEqual(expectedDescendents.indexOf(imp), -1);
+      });
+      assert.equal(expectedDescendents.length, descendents.length);
+    });
+  });
+
 
   describe('parseFile', function () {
     it('should parse imports', function () {
