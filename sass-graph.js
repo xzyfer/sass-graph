@@ -10,15 +10,21 @@ var parseImports = require('./parse-imports');
 function resolveSassPath(sassPath, loadPaths) {
   // trim any file extensions
   var sassPathName = sassPath.replace(/\.\w+$/, '');
+  var explicitPath, scssPath, partialPath;
+  
   // check all load paths
   var i, length = loadPaths.length;
   for(i = 0; i < length; i++) {
-    var scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + ".scss");
+    explicitPath = path.normalize(loadPaths[i] + "/" + sassPath);
+    if (fs.existsSync(explicitPath)) {
+      return explicitPath;
+    }
+    scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + ".scss");
     if (fs.existsSync(scssPath)) {
       return scssPath;
     }
     // special case for _partials
-    var partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
+    partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
     if (fs.existsSync(partialPath)) {
       return partialPath
     }
