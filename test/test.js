@@ -11,7 +11,7 @@ var files = {
   'd.scss': fixtures + "/d.scss",
   '_e.scss': fixtures + "/components/_e.scss",
   'f.scss': fixtures + "/f.scss",
-  'g.scss': fixtures + '/g.scss',
+  'j.scss': fixtures + '/j.scss',
   'z.css': fixtures + '/z.css',
   'foo.bar': fixtures + '/foo.bar'
 };
@@ -45,10 +45,10 @@ describe('sass-graph', function(){
 
   describe('parseFile', function () {
     it('should include any file that actually exists if explicitly imported', function() {
-      var graph = sassGraph.parseFile(files['g.scss']);
+      var graph = sassGraph.parseFile(files['j.scss']);
       var expectedDescendents = [files['a.css'], files['z.css'], files['foo.bar']];
       var descendents = [];
-      graph.visitDescendents(files['g.scss'], function (imp) {
+      graph.visitDescendents(files['j.scss'], function (imp) {
         descendents.push(imp);
         assert.notEqual(expectedDescendents.indexOf(imp), -1);
       });
