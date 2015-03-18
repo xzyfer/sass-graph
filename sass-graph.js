@@ -9,7 +9,7 @@ var parseImports = require('./parse-imports');
 // resolve a sass module to a path
 function resolveSassPath(sassPath, loadPaths) {
   // trim sass file extensions
-  var sassPathName = sassPath.replace(/\.scss$/, '');
+  var sassPathName = sassPath.replace(/\.(css|s[ca]ss)$/, '');
   // check all load paths
   var i, length = loadPaths.length;
   for(i = 0; i < length; i++) {
