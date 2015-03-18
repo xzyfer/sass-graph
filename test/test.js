@@ -13,6 +13,8 @@ var files = {
   'g.scss': fixtures + "/g.scss",
   '_h.scss': fixtures + "/nested/_h.scss",
   '_i.scss': fixtures + "/nested/_i.scss",
+  'j.scss': fixtures + "/j.scss",
+  'k.l.scss': fixtures + "/components/k.l.scss"
 }
 
 describe('sass-graph', function(){
