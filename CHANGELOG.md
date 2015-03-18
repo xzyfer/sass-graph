@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [next]
+### Features
+
+### Fixed
+
+### Tests
+
+## [1.1.0] - 2015-03-18
+### Fixed
+- Only strip extension for css, scss, sass files
+
 ## [1.0.4] - 2015-03-03
 ### Tests
 - Added a test for nested imports
