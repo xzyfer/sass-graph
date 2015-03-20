@@ -23,8 +23,9 @@ function resolveSassPath(sassPath, loadPaths) {
       return partialPath
     }
   }
-  var errMsg = "File to import not found or unreadable: " + sassPath;
-  throw errMsg;
+
+  // File to import not found or unreadable so we assume this is a custom import
+  return false
 }
 
 function Graph(loadPaths, dir) {
@@ -60,7 +61,7 @@ Graph.prototype.addFile = function(filepath, parent) {
       }
     }.bind(this));
     var resolved = resolveSassPath(imports[i], _.uniq(this.loadPaths));
-    if (!resolved) return false;
+    if (!resolved) continue;
 
     // recurse into dependencies if not already enumerated
     if(!_.contains(entry.imports, resolved)) {
