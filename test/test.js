@@ -14,7 +14,10 @@ var files = {
   '_h.scss': fixtures + "/nested/_h.scss",
   '_i.scss': fixtures + "/nested/_i.scss",
   'j.scss': fixtures + "/j.scss",
-  'k.l.scss': fixtures + "/components/k.l.scss"
+  'k.l.scss': fixtures + "/components/k.l.scss",
+  'm.scss': fixtures + "/m.scss",
+  '_n.scss': fixtures + "/compass/_n.scss",
+  '_compass.scss': fixtures + "/components/_compass.scss"
 }
 
 describe('sass-graph', function(){
@@ -43,6 +46,10 @@ describe('sass-graph', function(){
         descendents.push(imp);
         assert.notEqual(expectedDescendents.indexOf(imp), -1);
       });
+    });
+
+    it('should ignore custom imports for m.scss', function() {
+      assert.deepEqual([files['_compass.scss'] , files['_n.scss']], graph.index[files['m.scss']].imports);
     });
 
     it('should traverse ancestors of _c.scss', function() {
