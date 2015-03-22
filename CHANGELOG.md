@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 ### Tests
 
+## [1.2.0]
+### Features
+- Add support for custom imports
+
 ## [1.1.0] - 2015-03-18
 ### Fixed
 - Only strip extension for css, scss, sass files
