@@ -8,17 +8,21 @@ All notable changes to this project will be documented in this file.
 
 ### Tests
 
+## [1.3.0]
+### Features
+- Add support for indented syntax - [@vegetableman](https://github.com/vegetableman)
+
 ## [1.2.0]
 ### Features
-- Add support for custom imports
+- Add support for custom imports - [@kevin-smets](https://github.com/kevin-smets)
 
 ## [1.1.0] - 2015-03-18
 ### Fixed
-- Only strip extension for css, scss, sass files
+- Only strip extension for css, scss, sass files - [@nervo](https://github.com/nervo)
 
 ## [1.0.4] - 2015-03-03
 ### Tests
-- Added a test for nested imports
+- Added a test for nested imports - [@kevin-smets](https://github.com/kevin-smets)
 
 ## [1.0.3] - 2015-02-02
 ### Fixed
