@@ -11,16 +11,26 @@ function resolveSassPath(sassPath, loadPaths) {
   // trim sass file extensions
   var sassPathName = sassPath.replace(/\.(css|s[ca]ss)$/, '');
   // check all load paths
-  var i, length = loadPaths.length;
+  var i, length = loadPaths.length, extensions = [".css", ".sass", ".scss"];
   for(i = 0; i < length; i++) {
-    var scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + ".scss");
-    if (fs.existsSync(scssPath)) {
-      return scssPath;
+    var scssPath;
+
+    for (var j = 0; j < extensions.length; j++) {
+      scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + extensions[j]);
+      if (fs.existsSync(scssPath)) {
+        return scssPath;
+      }
     }
+
+    var partialPath;
+
     // special case for _partials
-    var partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
-    if (fs.existsSync(partialPath)) {
-      return partialPath
+    for (var j = 0; j < extensions.length; j++) {
+      scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + extensions[j]);
+      partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
+      if (fs.existsSync(partialPath)) {
+        return partialPath;
+      }
     }
   }
 
@@ -35,7 +45,7 @@ function Graph(loadPaths, dir) {
 
   if(dir) {
     var graph = this;
-    _(glob.sync(dir+"/**/*.scss", {})).forEach(function(file) {
+    _(glob.sync(dir+"/**/*.s[ca]ss", {})).forEach(function(file) {
       graph.addFile(path.resolve(file));
     });
   }
