@@ -7,16 +7,17 @@ var glob = require('glob');
 var parseImports = require('./parse-imports');
 
 // resolve a sass module to a path
-function resolveSassPath(sassPath, loadPaths) {
+function resolveSassPath(sassPath, loadPaths, extensions) {
   // trim sass file extensions
-  var sassPathName = sassPath.replace(/\.(css|s[ca]ss)$/, '');
+  var re = new RegExp('(\.('+extensions.join('|')+'))$', 'i');
+  var sassPathName = sassPath.replace(re, '');
   // check all load paths
-  var i, length = loadPaths.length, extensions = [".css", ".sass", ".scss"];
+  var i, length = loadPaths.length;
   for(i = 0; i < length; i++) {
     var scssPath;
 
     for (var j = 0; j < extensions.length; j++) {
-      scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + extensions[j]);
+      scssPath = path.normalize(loadPaths[i] + '/' + sassPathName + '.' + extensions[j]);
       if (fs.existsSync(scssPath)) {
         return scssPath;
       }
@@ -26,8 +27,8 @@ function resolveSassPath(sassPath, loadPaths) {
 
     // special case for _partials
     for (var j = 0; j < extensions.length; j++) {
-      scssPath = path.normalize(loadPaths[i] + "/" + sassPathName + extensions[j]);
-      partialPath = path.join(path.dirname(scssPath), "_" + path.basename(scssPath));
+      scssPath = path.normalize(loadPaths[i] + '/' + sassPathName + '.' + extensions[j]);
+      partialPath = path.join(path.dirname(scssPath), '_' + path.basename(scssPath));
       if (fs.existsSync(partialPath)) {
         return partialPath;
       }
@@ -35,17 +36,18 @@ function resolveSassPath(sassPath, loadPaths) {
   }
 
   // File to import not found or unreadable so we assume this is a custom import
-  return false
+  return false;
 }
 
-function Graph(loadPaths, dir) {
+function Graph(options, dir) {
   this.dir = dir;
-  this.loadPaths = loadPaths;
+  this.loadPaths = options.loadPaths || [];
+  this.extensions = options.extensions || [];
   this.index = {};
 
   if(dir) {
     var graph = this;
-    _(glob.sync(dir+"/**/*.s[ca]ss", {})).forEach(function(file) {
+    _(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true })).forEach(function(file) {
       graph.addFile(path.resolve(file));
     });
   }
@@ -117,7 +119,7 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
   filepath = fs.realpathSync(filepath);
   var visited = visited || [];
   if(!this.index.hasOwnProperty(filepath)) {
-    edgeCallback("Graph doesn't contain " + filepath, null);
+    edgeCallback('Graph doesn\'t contain ' + filepath, null);
   }
   var edges = edgeCallback(null, this.index[filepath]);
 
@@ -133,21 +135,28 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 
 function processOptions(options) {
   options = options || {};
-  if(!options.hasOwnProperty('loadPaths')) options['loadPaths'] = [];
+  options.loadPaths = !!(options.loadPaths) ? options.loadPaths : [];
+  options.extensions = !!(options.extensions) ? options.extensions : ['scss', 'css'];
   return options;
 }
 
 module.exports.parseFile = function(filepath, options) {
-  var filepath = path.resolve(filepath);
-  var options = processOptions(options);
-  var graph = new Graph(options.loadPaths);
-  graph.addFile(filepath);
-  return graph;
+  if (fs.lstatSync(filepath).isFile()) {
+    filepath = path.resolve(filepath);
+    options = processOptions(options);
+    var graph = new Graph(options);
+    graph.addFile(filepath);
+    return graph;
+  }
+  // throws
 };
 
 module.exports.parseDir = function(dirpath, options) {
-  var dirpath = path.resolve(dirpath);
-  var options = processOptions(options);
-  var graph = new Graph(options.loadPaths, dirpath);
-  return graph;
+  if (fs.lstatSync(dirpath).isDirectory()) {
+    dirpath = path.resolve(dirpath);
+    options = processOptions(options);
+    var graph = new Graph(options, dirpath);
+    return graph;
+  }
+  // throws
 };

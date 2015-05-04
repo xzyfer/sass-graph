@@ -83,8 +83,9 @@ try {
   }
 
   var graph = require('../').parseDir(directory, {
+    extensions: argv.extensions,
     loadPaths: loadPaths,
-    });
+  });
 
   if(argv.json) {
     console.log(JSON.stringify(graph.index, null, 4));
