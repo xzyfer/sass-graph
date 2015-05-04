@@ -49,7 +49,7 @@ function Graph(options, dir) {
     var graph = this;
     _(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true })).forEach(function(file) {
       graph.addFile(path.resolve(file));
-    });
+    }).value();
   }
 }
 
