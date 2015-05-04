@@ -65,14 +65,10 @@ Graph.prototype.addFile = function(filepath, parent) {
   var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
   var cwd = path.dirname(filepath);
 
-  var i, length = imports.length;
+  var i, length = imports.length, loadPaths, resolved;
   for (i = 0; i < length; i++) {
-    [this.dir, cwd].forEach(function (path) {
-      if (path && this.loadPaths.indexOf(path) === -1) {
-        this.loadPaths.push(path);
-      }
-    }.bind(this));
-    var resolved = resolveSassPath(imports[i], _.uniq(this.loadPaths));
+    loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
+    resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
     if (!resolved) continue;
 
     // recurse into dependencies if not already enumerated
