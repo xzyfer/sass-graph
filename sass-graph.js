@@ -12,21 +12,17 @@ function resolveSassPath(sassPath, loadPaths, extensions) {
   var re = new RegExp('(\.('+extensions.join('|')+'))$', 'i');
   var sassPathName = sassPath.replace(re, '');
   // check all load paths
-  var i, length = loadPaths.length;
-  for(i = 0; i < length; i++) {
-    var scssPath;
-
-    for (var j = 0; j < extensions.length; j++) {
+  var i, j, length = loadPaths.length, scssPath, partialPath;
+  for (i = 0; i < length; i++) {
+    for (j = 0; j < extensions.length; j++) {
       scssPath = path.normalize(loadPaths[i] + '/' + sassPathName + '.' + extensions[j]);
       if (fs.existsSync(scssPath)) {
         return scssPath;
       }
     }
 
-    var partialPath;
-
     // special case for _partials
-    for (var j = 0; j < extensions.length; j++) {
+    for (j = 0; j < extensions.length; j++) {
       scssPath = path.normalize(loadPaths[i] + '/' + sassPathName + '.' + extensions[j]);
       partialPath = path.join(path.dirname(scssPath), '_' + path.basename(scssPath));
       if (fs.existsSync(partialPath)) {
@@ -45,7 +41,7 @@ function Graph(options, dir) {
   this.extensions = options.extensions || [];
   this.index = {};
 
-  if(dir) {
+  if (dir) {
     var graph = this;
     _(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true })).forEach(function(file) {
       graph.addFile(path.resolve(file));
@@ -72,20 +68,18 @@ Graph.prototype.addFile = function(filepath, parent) {
     if (!resolved) continue;
 
     // recurse into dependencies if not already enumerated
-    if(!_.contains(entry.imports, resolved)) {
+    if (!_.contains(entry.imports, resolved)) {
       entry.imports.push(resolved);
       this.addFile(fs.realpathSync(resolved), filepath);
     }
   }
 
   // add link back to parent
-  if(parent) {
-    resolvedParent = _.find(this.loadPaths, function(path) {
-      return parent.indexOf(path) !== -1;
-    });
+  if (parent) {
+    resolvedParent = _(parent).intersection(this.loadPaths).value();
 
     if (resolvedParent) {
-      resolvedParent = parent.substr(parent.indexOf(resolvedParent));//.replace(/^\/*/, '');
+      resolvedParent = parent.substr(parent.indexOf(resolvedParent));
     } else {
       resolvedParent = parent;
     }
@@ -114,14 +108,14 @@ Graph.prototype.visitDescendents = function(filepath, callback) {
 Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
   filepath = fs.realpathSync(filepath);
   var visited = visited || [];
-  if(!this.index.hasOwnProperty(filepath)) {
+  if (!this.index.hasOwnProperty(filepath)) {
     edgeCallback('Graph doesn\'t contain ' + filepath, null);
   }
   var edges = edgeCallback(null, this.index[filepath]);
 
   var i, length = edges.length;
   for (i = 0; i < length; i++) {
-    if(!_.contains(visited, edges[i])) {
+    if (!_.contains(visited, edges[i])) {
       visited.push(edges[i]);
       callback(edges[i], this.index[edges[i]]);
       this.visit(edges[i], callback, edgeCallback, visited);
@@ -130,10 +124,10 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 };
 
 function processOptions(options) {
-  options = options || {};
-  options.loadPaths = !!(options.loadPaths) ? options.loadPaths : [];
-  options.extensions = !!(options.extensions) ? options.extensions : ['scss', 'css'];
-  return options;
+  return _.assign({
+    loadPaths: [process.cwd()],
+    extensions: ['scss', 'css'],
+  }, options);
 }
 
 module.exports.parseFile = function(filepath, options) {
