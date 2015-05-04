@@ -17,7 +17,7 @@
     "graph"
   ],
   "dependencies": {
-    "glob": "^4.3.4",
+    "glob": "^5.0.5",
     "lodash": "^2.4.1",
     "yargs": "^3.8.0"
   },
