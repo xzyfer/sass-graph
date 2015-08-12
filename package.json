@@ -1,6 +1,6 @@
 {
   "name": "sass-graph",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Parse sass files and extract a graph of imports",
   "license": "MIT",
   "repository": "xzyfer/sass-graph",
