@@ -11,6 +11,19 @@ describe('parse-imports', function () {
     assert.equal(result[0], "app");
   });
 
+  it('should parse single import without quotes', function () {
+    var sass = "@import app";
+    var result = parseImports(sass);
+    assert.equal(result.length, 1);
+    assert.equal(result[0], "app");
+  });
+
+  it('should not parse single import without quotes with SCSS', function () {
+    var sass = "@import app;";
+    var result = parseImports(sass);
+    assert.equal(result.length, 0);
+  });
+
   it('should parse single import with double quotes', function () {
     var scss = '@import "app"; ';
     var result = parseImports(scss);

@@ -2,30 +2,36 @@
 var assert = require("assert");
 var path = require("path");
 
-var fixtures = path.resolve("test/fixtures");
+var fixtures = path.resolve(path.join("test", "fixtures")),
+    sass_fixtures = path.resolve(path.join("test", "fixtures-indent"));
 var files = {
   'a.scss': path.join(fixtures, 'a.scss'),
   'b.scss': path.join(fixtures, 'b.scss'),
   '_c.scss': path.join(fixtures, '_c.scss'),
   'd.scss': path.join(fixtures, 'd.scss'),
-  '_e.scss': path.join(fixtures, 'components/_e.scss'),
+  '_e.scss': path.join(fixtures, 'components', '_e.scss'),
   'f.scss': path.join(fixtures, 'f.scss'),
   'g.scss': path.join(fixtures, 'g.scss'),
   '_h.scss': path.join(fixtures, 'nested/_h.scss'),
   '_i.scss': path.join(fixtures, 'nested/_i.scss'),
   'i.scss': path.join(fixtures, '_i.scss'),
   'j.scss': path.join(fixtures, 'j.scss'),
-  'k.l.scss': path.join(fixtures, 'components/k.l.scss'),
+  'k.l.scss': path.join(fixtures, 'components', 'k.l.scss'),
   'm.scss': path.join(fixtures, 'm.scss'),
   '_n.scss': path.join(fixtures, 'compass/_n.scss'),
-  '_compass.scss': path.join(fixtures, 'components/_compass.scss')
-}
+  '_compass.scss': path.join(fixtures, 'components', '_compass.scss')
+};
+var sassfiles = {
+  'sample.sass': path.join(sass_fixtures, 'sample.sass'),
+  '_sassy.sass': path.join(sass_fixtures, 'components', '_sassy.sass'),
+  '_more.sass': path.join(sass_fixtures, '_more.sass')
+};
 
 describe('sass-graph', function(){
   var sassGraph = require('../sass-graph');
 
   describe('parsing a graph of all scss files', function(){
-    var graph = sassGraph.parseDir(fixtures, {loadPaths: [fixtures + '/components']});
+    var graph = sassGraph.parseDir(fixtures, {loadPaths: [path.join(fixtures, 'components')]});
 
     it('should have all files', function(){
       assert.equal(Object.keys(files).length, Object.keys(graph.index).length);
@@ -83,11 +89,9 @@ describe('sass-graph', function(){
       });
       assert.equal(expectedDescendents.length, descendents.length);
     });
-  });
 
-  describe('parseFile', function () {
     it('should parse imports with loadPaths', function () {
-      var graph = sassGraph.parseFile(files['d.scss'], {loadPaths: [fixtures + '/components']} );
+      var graph = sassGraph.parseFile(files['d.scss'], {loadPaths: [path.join(fixtures, 'components')]} );
       var expectedDescendents = [files['_e.scss']];
       var descendents = [];
       graph.visitDescendents(files['d.scss'], function (imp) {
@@ -96,9 +100,20 @@ describe('sass-graph', function(){
       });
       assert.equal(expectedDescendents.length, descendents.length);
     });
-  });
 
-  describe('parseFile', function () {
+    it('should parse sass import', function () {
+      var graph = sassGraph.parseFile(sassfiles['sample.sass'], {
+        extensions: ['sass']
+      });
+      var expectedDescendents = [sassfiles['_sassy.sass'], sassfiles['_more.sass']];
+      var descendents = [];
+      graph.visitDescendents(sassfiles['sample.sass'], function (imp) {
+        descendents.push(imp);
+        assert.notEqual(expectedDescendents.indexOf(imp), -1);
+      });
+      assert.equal(expectedDescendents.length, descendents.length);
+    });
+
     it('should thow an error', function () {
       try {
         var graph = sassGraph.parseFile(files['d.scss']);
@@ -106,9 +121,7 @@ describe('sass-graph', function(){
         assert.equal(e, "File to import not found or unreadable: e");
       }
     });
-  });
 
-  describe('parseFile', function () {
     it('should not throw an error for a file with no dependencies with Array having added functions', function () {
       try {
         Array.prototype.foo = function() {
