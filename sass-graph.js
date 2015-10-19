@@ -40,6 +40,7 @@ function Graph(options, dir) {
   this.loadPaths = options.loadPaths || [];
   this.extensions = options.extensions || [];
   this.index = {};
+  this.loadedImports = [];
 
   if (dir) {
     var graph = this;
@@ -58,20 +59,24 @@ Graph.prototype.addFile = function(filepath, parent) {
   };
 
   var resolvedParent;
-  var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
-  var cwd = path.dirname(filepath);
+  if (!_.contains(this.loadedImports, filepath)) {
+    var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
+    var cwd = path.dirname(filepath);
 
-  var i, length = imports.length, loadPaths, resolved;
-  for (i = 0; i < length; i++) {
-    loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
-    resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
-    if (!resolved) continue;
+    var i, length = imports.length, loadPaths, resolved;
+    for (i = 0; i < length; i++) {
+      loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
+      resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
+      if (!resolved) continue;
 
-    // recurse into dependencies if not already enumerated
-    if (!_.contains(entry.imports, resolved)) {
-      entry.imports.push(resolved);
-      this.addFile(fs.realpathSync(resolved), filepath);
+      // recurse into dependencies if not already enumerated
+      if (!_.contains(entry.imports, resolved)) {
+        entry.imports.push(resolved);
+        this.addFile(fs.realpathSync(resolved), filepath);
+      }
     }
+
+    this.loadedImports.push(filepath);
   }
 
   // add link back to parent
