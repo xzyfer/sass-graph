@@ -17,8 +17,8 @@
     "graph"
   ],
   "dependencies": {
-    "glob": "^5.0.5",
-    "lodash": "^3.8.0",
+    "glob": "^6.0.4",
+    "lodash": "^4.0.0",
     "yargs": "^3.8.0"
   },
   "devDependencies": {

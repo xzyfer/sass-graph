@@ -43,9 +43,9 @@ function Graph(options, dir) {
 
   if (dir) {
     var graph = this;
-    _(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true })).forEach(function(file) {
+    _.each(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true }), function(file) {
       graph.addFile(path.resolve(file));
-    }).value();
+    });
   }
 }
 
@@ -68,7 +68,7 @@ Graph.prototype.addFile = function(filepath, parent) {
     if (!resolved) continue;
 
     // recurse into dependencies if not already enumerated
-    if (!_.contains(entry.imports, resolved)) {
+    if (!_.includes(entry.imports, resolved)) {
       entry.imports.push(resolved);
       this.addFile(fs.realpathSync(resolved), filepath);
     }
@@ -115,7 +115,7 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 
   var i, length = edges.length;
   for (i = 0; i < length; i++) {
-    if (!_.contains(visited, edges[i])) {
+    if (!_.includes(visited, edges[i])) {
       visited.push(edges[i]);
       callback(edges[i], this.index[edges[i]]);
       this.visit(edges[i], callback, edgeCallback, visited);
