@@ -43,7 +43,7 @@ function Graph(options, dir) {
 
   if (dir) {
     var graph = this;
-    _(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true })).forEach(function(file) {
+    _(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true })).forEach(function(file) {
       graph.addFile(path.resolve(file));
     }).value();
   }
