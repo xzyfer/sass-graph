@@ -18,6 +18,7 @@ var files = {
   'k.l.scss': path.join(fixtures, 'components/k.l.scss'),
   'm.scss': path.join(fixtures, 'm.scss'),
   '_n.scss': path.join(fixtures, 'compass/_n.scss'),
+  '_p.scss': path.join(fixtures, '_o.scss/_p.scss'),
   '_compass.scss': path.join(fixtures, 'components/_compass.scss')
 }
 
