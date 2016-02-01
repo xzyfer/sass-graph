@@ -8,6 +8,11 @@ All notable changes to this project will be documented in this file.
 
 ### Tests
 
+## [2.1.1]
+### Fixed
+
+- Don't add directory `@import`s to graph - [@niksy](https://github.com/niksy)
+
 ## [2.1.0]
 ### Features
 
