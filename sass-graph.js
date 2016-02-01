@@ -16,7 +16,7 @@ function resolveSassPath(sassPath, loadPaths, extensions) {
   for (i = 0; i < length; i++) {
     for (j = 0; j < extensions.length; j++) {
       scssPath = path.normalize(loadPaths[i] + '/' + sassPathName + '.' + extensions[j]);
-      if (fs.existsSync(scssPath)) {
+      if (fs.existsSync(scssPath) && fs.lstatSync(scssPath).isFile()) {
         return scssPath;
       }
     }
@@ -25,7 +25,7 @@ function resolveSassPath(sassPath, loadPaths, extensions) {
     for (j = 0; j < extensions.length; j++) {
       scssPath = path.normalize(loadPaths[i] + '/' + sassPathName + '.' + extensions[j]);
       partialPath = path.join(path.dirname(scssPath), '_' + path.basename(scssPath));
-      if (fs.existsSync(partialPath)) {
+      if (fs.existsSync(partialPath) && fs.lstatSync(partialPath).isFile()) {
         return partialPath;
       }
     }
