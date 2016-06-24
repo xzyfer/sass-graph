@@ -69,5 +69,33 @@ describe('parse-imports', function () {
     });       
   });
 
+  it('full css file ', function () {
+    var scss = `@import url("a.css");
+        @import url("b.scss")
+        @import "c.scss";
+        @import "d";
+        @import "app1", "foo1";
+        @import "app2",
+          "foo2";
+        /***************************************************************************
+        reset the browser's default css setting
+        ****************************************************************************/
+        /*
+        table{
+          border-collapse: collapse;
+          width: 100%;
+        }
 
+         [class*='jimu'],
+         [class*='jimu'] * {
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+        `;
+    var result = parseImports(scss);
+    ["a.css", "b.scss", "c.scss", "d", "app1", "foo1", "app2", "foo2"].forEach(function (dep) {
+      assert.equal(result.length, 8);
+      assert.notEqual(result.indexOf(dep), -1);
+    });
+  });
 });
