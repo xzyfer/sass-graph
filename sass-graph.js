@@ -2,7 +2,11 @@
 
 var fs = require('fs');
 var path = require('path');
-var _ = require('lodash');
+var includes = require('lodash.includes');
+var assign = require('lodash.assign');
+var filter = require('lodash.filter');
+var uniq = require('lodash.uniq');
+var intersection = require('lodash.intersection');
 var glob = require('glob');
 var parseImports = require('./parse-imports');
 
@@ -47,7 +51,7 @@ function Graph(options, dir) {
 
   if (dir) {
     var graph = this;
-    _.each(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true }), function(file) {
+    glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true }).forEach(function(file) {
       graph.addFile(path.resolve(file));
     });
   }
@@ -67,12 +71,12 @@ Graph.prototype.addFile = function(filepath, parent) {
 
   var i, length = imports.length, loadPaths, resolved;
   for (i = 0; i < length; i++) {
-    loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
+    loadPaths = uniq(filter([cwd, this.dir].concat(this.loadPaths)));
     resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
     if (!resolved) continue;
 
     // recurse into dependencies if not already enumerated
-    if (!_.includes(entry.imports, resolved)) {
+    if (!includes(entry.imports, resolved)) {
       entry.imports.push(resolved);
       this.addFile(fs.realpathSync(resolved), filepath);
     }
@@ -80,7 +84,7 @@ Graph.prototype.addFile = function(filepath, parent) {
 
   // add link back to parent
   if (parent) {
-    resolvedParent = _(parent).intersection(this.loadPaths).value();
+    resolvedParent = intersection(parent, this.loadPaths);
 
     if (resolvedParent) {
       resolvedParent = parent.substr(parent.indexOf(resolvedParent));
@@ -119,7 +123,7 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 
   var i, length = edges.length;
   for (i = 0; i < length; i++) {
-    if (!_.includes(visited, edges[i])) {
+    if (!includes(visited, edges[i])) {
       visited.push(edges[i]);
       callback(edges[i], this.index[edges[i]]);
       this.visit(edges[i], callback, edgeCallback, visited);
@@ -128,7 +132,7 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 };
 
 function processOptions(options) {
-  return _.assign({
+  return assign({
     loadPaths: [process.cwd()],
     extensions: ['scss', 'css'],
   }, options);
