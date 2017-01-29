@@ -70,7 +70,7 @@ Directories to use when resolved `@import` directives.
 #### extensions
 
 Type: `Array`
-Default: `['scss', 'css']`
+Default: `['scss', 'css', 'sass']`
 
 File types to be parsed.
 
