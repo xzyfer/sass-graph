@@ -62,7 +62,8 @@ Graph.prototype.addFile = function(filepath, parent) {
   };
 
   var resolvedParent;
-  var imports = parseImports(fs.readFileSync(filepath, 'utf-8'));
+  var isIndentedSyntax = path.extname(filepath) === '.sass';
+  var imports = parseImports(fs.readFileSync(filepath, 'utf-8'), isIndentedSyntax);
   var cwd = path.dirname(filepath);
 
   var i, length = imports.length, loadPaths, resolved;
@@ -130,7 +131,7 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 function processOptions(options) {
   return _.assign({
     loadPaths: [process.cwd()],
-    extensions: ['scss', 'css'],
+    extensions: ['scss', 'css', 'sass'],
   }, options);
 }
 

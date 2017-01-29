@@ -1,6 +1,6 @@
 var tokenizer = require('scss-tokenizer');
 
-function parseImports(content) {
+function parseImports(content, isIndentedSyntax) {
   var tokens = tokenizer.tokenize(content);
   var results = [];
   var tmp = '';
@@ -16,7 +16,7 @@ function parseImports(content) {
       results.push(token[1]);
     }
     else if (token[1] === 'import' && prevToken[1] === '@') {
-      if (inImport) {
+      if (inImport && !isIndentedSyntax) {
         throw new Error('Encountered invalid @import syntax.');
       }
 
@@ -29,6 +29,10 @@ function parseImports(content) {
       if (tmp !== '') {
         results.push(tmp);
         tmp = '';
+
+        if (isIndentedSyntax) {
+          inImport = false;
+        }
       }
     }
     else if (inImport && token[0] === ';') {
@@ -48,6 +52,10 @@ function parseImports(content) {
     }
 
     prevToken = token;
+  }
+
+  if (tmp !== '') {
+    results.push(tmp);
   }
 
   return results;
