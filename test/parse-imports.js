@@ -15,6 +15,14 @@ describe('parse-imports', function () {
     assert.deepEqual(['app'], result);
   });
 
+  it('should parse unquoted import', function () {
+    var scss = '@import include/app;\n' +
+               '@import include/foo,\n' +
+                  'include/bar;';
+    var result = parseImports(scss);
+    assert.deepEqual(['include/app', 'include/foo', 'include/bar'], result);
+  });
+
   it('should parse single import with extra spaces after import', function () {
     var scss = '@import  "app";';
     var result = parseImports(scss);
@@ -58,9 +66,11 @@ describe('parse-imports', function () {
   it('should not parse import in CSS comment', function () {
     var scss = '@import "app"; \n' +
                '/*@import "foo";*/ \n' +
-               '@import /*"bar";*/ "baz"';
+               '/*@import "nav"; */ \n' +
+               '@import /*"bar"; */ "baz"; \n' +
+               '@import /*"bar";*/ "bam"';
     var result = parseImports(scss);
-    assert.deepEqual(['app', 'baz'], result);
+    assert.deepEqual(['app', 'baz', 'bam'], result);
   });
 
   it('should not parse import in Sass comment', function () {
@@ -70,5 +80,56 @@ describe('parse-imports', function () {
                         '"baz"';
     var result = parseImports(scss);
     assert.deepEqual(['app', 'baz'], result);
+  });
+
+  it('should not parse import in any comment', function () {
+    var scss = '@import \n' +
+      '// app imports foo\n' +
+      '"app",\n' +
+      '\n' +
+      '/** do not import bar;\n' +
+      ' "bar"\n' +
+      '*/\n' +
+      '\n' +
+      '// do not import nav: "d",\n' +
+      '\n' +
+      '// footer imports nothing else\n' +
+      '"baz"';
+    var result = parseImports(scss);
+    assert.deepEqual(['app', 'baz'], result);
+  });
+
+  it('should throw error when invalid @import syntax is encountered', function () {
+    var scss = '@import "a.css"\n' +
+        '@import "b.scss";';
+    assert.throws(function() {
+      parseImports(scss);
+    });
+  })
+
+  it('should parse a full css file', function () {
+    var scss = '@import url("a.css");\n' +
+        '@import url("b.scss");\n' +
+        '@import "c.scss";\n' +
+        '@import "d";\n' +
+        '@import "app1", "foo1";\n' +
+        '@import "app2",\n' +
+        '  "foo2";\n' +
+        '/********\n' +
+        'reset\n' +
+        '*********/\n' +
+        '/*\n' +
+        'table{\n' +
+        '  border-collapse: collapse;\n' +
+        '  width: 100%;\n' +
+        '}\n' +
+        '\n' +
+        '  [class*="jimu"],\n' +
+        '  [class*="jimu"] * {\n' +
+        '  -moz-box-sizing: border-box;\n' +
+        '  box-sizing: border-box;\n' +
+        '}';
+    var result = parseImports(scss);
+    assert.deepEqual(["c.scss", "d", "app1", "foo1", "app2", "foo2"], result);
   });
 });
