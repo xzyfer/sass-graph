@@ -38,6 +38,37 @@ describe('sass-graph', function(){
       });
     });
 
+    describe('with a simple graph in indented syntax', function() {
+      it('should return a graph', function() {
+        graph().indented().fromFixtureFile('indented-syntax')
+          .assertDecendents([
+            'b.sass',
+            '_c.sass',
+            path.join('nested', '_d.sass'),
+            path.join('nested', '_e.sass'),
+          ])
+          .assertAncestors(path.join('nested', '_e.sass'), [
+            path.join('nested', '_d.sass'),
+            '_c.sass',
+            'b.sass',
+            'index.sass',
+          ])
+          .assertAncestors(path.join('nested', '_d.sass'), [
+            '_c.sass',
+            'b.sass',
+            'index.sass',
+          ])
+          .assertAncestors('_c.sass', [
+            'b.sass',
+            'index.sass',
+          ])
+          .assertAncestors('b.sass', [
+            'index.sass',
+          ])
+          .assertAncestors('index.sass', []);
+      });
+    });
+
     describe('with a graph with loadPaths', function() {
       it.skip('should return a graph', function() {
         var includeFolder = 'inside-load-path';

@@ -15,6 +15,18 @@ describe('parse-imports', function () {
     assert.deepEqual(['app'], result);
   });
 
+  it('should parse single import without quotes', function () {
+    var scss = '@import app;';
+    var result = parseImports(scss);
+    assert.deepEqual(['app'], result);
+  });
+
+  it.only('should parse single import without quotes in indented syntax', function () {
+    var scss = '@import app';
+    var result = parseImports(scss, true);
+    assert.deepEqual(['app'], result);
+  });
+
   it('should parse unquoted import', function () {
     var scss = '@import include/app;\n' +
                '@import include/foo,\n' +
@@ -100,12 +112,20 @@ describe('parse-imports', function () {
   });
 
   it('should throw error when invalid @import syntax is encountered', function () {
-    var scss = '@import "a.css"\n' +
-        '@import "b.scss";';
+    var scss = '@import "a"\n' +
+        '@import "b";';
     assert.throws(function() {
       parseImports(scss);
     });
-  })
+  });
+
+  it('should not throw error when invalid @import syntax is encountered using indented syntax', function () {
+    var scss = '@import a\n' +
+        '@import b';
+    assert.doesNotThrow(function() {
+      parseImports(scss, true);
+    });
+  });
 
   it('should parse a full css file', function () {
     var scss = '@import url("a.css");\n' +

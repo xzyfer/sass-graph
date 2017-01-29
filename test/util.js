@@ -13,25 +13,37 @@ var fixture = function(name) {
 };
 
 var graph = function(opts) {
-  var instance, dir;
+  var instance, dir, isIndentedSyntax;
+
+  function indexFile() {
+    if (isIndentedSyntax) {
+      return 'index.sass';
+    }
+    return 'index.scss';
+  };
 
   return  {
+    indented: function() {
+      isIndentedSyntax = true;
+      return this;
+    },
+
     fromFixtureDir: function(name) {
       dir = fixture(name);
-      instance = sassGraph.parseDir(path.dirname(dir()), opts);
+      instance = sassGraph.parseDir(path.dirname(dir(indexFile())), opts);
       return this;
     },
 
     fromFixtureFile: function(name) {
       dir = fixture(name);
-      instance = sassGraph.parseFile(dir(), opts);
+      instance = sassGraph.parseFile(dir(indexFile()), opts);
       return this;
     },
 
     assertDecendents: function(expected) {
       var actual = [];
 
-      instance.visitDescendents(dir(), function(imp) {
+      instance.visitDescendents(dir(indexFile()), function(imp) {
         actual.push(imp)
       });
 
