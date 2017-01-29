@@ -22,7 +22,7 @@ var yargs = require('yargs')
 
     .option('e', {
       alias: 'extensions',
-      default: ['scss', 'css'],
+      default: ['scss', 'css', 'sass'],
       describe: 'File extensions to include in the graph',
       type: 'array',
     })
