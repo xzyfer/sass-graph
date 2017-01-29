@@ -21,7 +21,7 @@ describe('parse-imports', function () {
     assert.deepEqual(['app'], result);
   });
 
-  it.only('should parse single import without quotes in indented syntax', function () {
+  it('should parse single import without quotes in indented syntax', function () {
     var scss = '@import app';
     var result = parseImports(scss, true);
     assert.deepEqual(['app'], result);
