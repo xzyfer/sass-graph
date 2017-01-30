@@ -70,10 +70,11 @@ describe('sass-graph', function(){
     });
 
     describe('with a graph with loadPaths', function() {
-      it.skip('should return a graph', function() {
+      it('should return a graph', function() {
         var includeFolder = 'inside-load-path';
         var excludeFolder = 'outside-load-path';
-        var opts = { loadPaths: [ fixture('load-path')(includeFolder) ] };
+        var rootFolder = path.dirname(fixture('load-path')());
+        var opts = { loadPaths: [ rootFolder, fixture('load-path')(includeFolder) ] };
 
         graph(opts).fromFixtureFile('load-path')
           .assertDecendents([

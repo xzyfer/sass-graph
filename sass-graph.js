@@ -41,9 +41,11 @@ function resolveSassPath(sassPath, loadPaths, extensions) {
 
 function Graph(options, dir) {
   this.dir = dir;
-  this.loadPaths = options.loadPaths || [];
   this.extensions = options.extensions || [];
   this.index = {};
+  this.loadPaths = _(options.loadPaths).map(function(p) {
+    return path.resolve(p);
+  }).value();
 
   if (dir) {
     var graph = this;
