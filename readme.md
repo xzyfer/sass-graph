@@ -74,6 +74,13 @@ Default: `['scss', 'css', 'sass']`
 
 File types to be parsed.
 
+#### follow
+
+Type: `Boolean`
+Default: `false`
+
+Follow symbolic links.
+
 ## Example
 
 ```js

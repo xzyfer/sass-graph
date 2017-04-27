@@ -43,13 +43,14 @@ function Graph(options, dir) {
   this.dir = dir;
   this.extensions = options.extensions || [];
   this.index = {};
+  this.follow = options.follow || false;
   this.loadPaths = _(options.loadPaths).map(function(p) {
     return path.resolve(p);
   }).value();
 
   if (dir) {
     var graph = this;
-    _.each(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true }), function(file) {
+    _.each(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true, follow: this.follow }), function(file) {
       graph.addFile(path.resolve(file));
     });
   }

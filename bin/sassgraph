@@ -27,6 +27,13 @@ var yargs = require('yargs')
       type: 'array',
     })
 
+    .option('f', {
+      alias: 'follow',
+      default: false,
+      describe: 'Follow symbolic links',
+      type: 'bool',
+    })
+
     .option('j', {
       alias: 'json',
       default: false,
@@ -85,6 +92,7 @@ try {
   var graph = require('../').parseDir(directory, {
     extensions: argv.extensions,
     loadPaths: loadPaths,
+    follow: argv.follow,
   });
 
   if(argv.json) {
