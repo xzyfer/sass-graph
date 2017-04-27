@@ -2,3 +2,4 @@ node_modules
 output
 .sass-cache
 test.js
+.nyc_output
