@@ -3,6 +3,7 @@
 Parses Sass files in a directory and exposes a graph of dependencies
 
 [![Build Status](https://travis-ci.org/xzyfer/sass-graph.svg?branch=master)](https://travis-ci.org/xzyfer/sass-graph)
+[![Coverage Status](https://coveralls.io/repos/github/xzyfer/sass-graph/badge.svg?branch=master)](https://coveralls.io/github/xzyfer/sass-graph?branch=master)
 [![npm version](https://badge.fury.io/js/sass-graph.svg)](http://badge.fury.io/js/sass-graph)
 [![Dependency Status](https://david-dm.org/xzyfer/sass-graph.svg?theme=shields.io)](https://david-dm.org/xzyfer/sass-graph)
 [![devDependency Status](https://david-dm.org/xzyfer/sass-graph/dev-status.svg?theme=shields.io)](https://david-dm.org/xzyfer/sass-graph#info=devDependencies)
