@@ -20,7 +20,7 @@
   "dependencies": {
     "glob": "^7.0.0",
     "lodash": "^4.0.0",
-    "scss-tokenizer": "^0.2.0",
+    "scss-tokenizer": "^0.2.1",
     "yargs": "^6.6.0"
   },
   "devDependencies": {
