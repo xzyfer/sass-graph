@@ -1,5 +1,7 @@
 # Sass Graph
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/xzyfer/sass-graph.svg)](https://greenkeeper.io/)
+
 Parses Sass files in a directory and exposes a graph of dependencies
 
 [![Build Status](https://travis-ci.org/xzyfer/sass-graph.svg?branch=master)](https://travis-ci.org/xzyfer/sass-graph)
