@@ -78,7 +78,8 @@ Graph.prototype.addFile = function(filepath, parent) {
       for (var j = 0; j < loadPaths.length; j++) {
         var results = glob.sync(imports[i], { cwd: loadPaths[j] });
         if (results.length) {
-          imports.splice(i, 1, ...results);
+          imports.splice(i, 1);
+          imports = imports.concat(results);
         }
       }
     }
