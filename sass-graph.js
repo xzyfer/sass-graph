@@ -44,6 +44,7 @@ function Graph(options, dir) {
   this.extensions = options.extensions || [];
   this.index = {};
   this.follow = options.follow || false;
+  this.globImports = options.globImports || false;
   this.loadPaths = _(options.loadPaths).map(function(p) {
     return path.resolve(p);
   }).value();
@@ -68,10 +69,23 @@ Graph.prototype.addFile = function(filepath, parent) {
   var isIndentedSyntax = path.extname(filepath) === '.sass';
   var imports = parseImports(fs.readFileSync(filepath, 'utf-8'), isIndentedSyntax);
   var cwd = path.dirname(filepath);
+  var loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
 
-  var i, length = imports.length, loadPaths, resolved;
-  for (i = 0; i < length; i++) {
-    loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
+  var i, resolved;
+
+  if (this.globImports) {
+    for (i = 0; i < imports.length; i++) {
+      for (var j = 0; j < loadPaths.length; j++) {
+        var results = glob.sync(imports[i], { cwd: loadPaths[j] });
+        if (results.length) {
+          imports.splice(i, 1);
+          imports = imports.concat(results);
+        }
+      }
+    }
+  }
+
+  for (i = 0; i < imports.length; i++) {
     resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
     if (!resolved) continue;
 
