@@ -82,13 +82,6 @@ Default: `false`
 
 Follow symbolic links.
 
-#### globImports
-
-Type: `Boolean`
-Default: `false`
-
-Glob imports. For example: `@import "./components/*";` would include anything from `./components/`.
-
 #### excludes
 
 Type: `RegExp`

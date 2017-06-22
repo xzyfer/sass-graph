@@ -160,14 +160,5 @@ describe('sass-graph', function(){
         });
       });
     });
-
-    describe('glob imports', function() {
-      it('should glob imports if options.globImports is truthy', function () {
-        graph({ globImports: true }).fromFixtureFile('glob-imports').assertDecendents([
-          'b.scss',
-          path.join('nested', 'c.scss'),
-        ]);
-      });
-    })
   });
 });
