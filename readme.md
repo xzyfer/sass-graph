@@ -89,6 +89,13 @@ Default: `false`
 
 Glob imports. For example: `@import "./components/*";` would include anything from `./components/`.
 
+#### excludes
+
+Type: `RegExp`
+Default: `undefined`
+
+Exclude files matching regular expression.
+
 ## Example
 
 ```js

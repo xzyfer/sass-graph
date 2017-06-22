@@ -42,6 +42,7 @@ function resolveSassPath(sassPath, loadPaths, extensions) {
 function Graph(options, dir) {
   this.dir = dir;
   this.extensions = options.extensions || [];
+  this.exclude = options.exclude;
   this.index = {};
   this.follow = options.follow || false;
   this.globImports = options.globImports || false;
@@ -59,6 +60,8 @@ function Graph(options, dir) {
 
 // add a sass file to the graph
 Graph.prototype.addFile = function(filepath, parent) {
+  if (this.exclude instanceof RegExp && this.exclude.test(filepath)) return;
+
   var entry = this.index[filepath] = this.index[filepath] || {
     imports: [],
     importedBy: [],
