@@ -99,7 +99,7 @@ Graph.prototype.addFile = function(filepath, parent) {
     }
 
     // check exclcude regex
-    if (this.exclude !== null && this.exclude.test(resolvedParent)) {
+    if (!(this.exclude !== null && this.exclude.test(resolvedParent))) {
       entry.importedBy.push(resolvedParent);
     }
   }
