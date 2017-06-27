@@ -78,6 +78,9 @@ Graph.prototype.addFile = function(filepath, parent) {
     resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
     if (!resolved) continue;
 
+    // check exclcude regex
+    if (this.exclude !== null && this.exclude.test(resolved)) continue;
+
     // recurse into dependencies if not already enumerated
     if (!_.includes(entry.imports, resolved)) {
       entry.imports.push(resolved);
@@ -95,7 +98,10 @@ Graph.prototype.addFile = function(filepath, parent) {
       resolvedParent = parent;
     }
 
-    entry.importedBy.push(resolvedParent);
+    // check exclcude regex
+    if (this.exclude !== null && this.exclude.test(resolvedParent)) {
+      entry.importedBy.push(resolvedParent);
+    }
   }
 };
 
