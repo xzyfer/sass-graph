@@ -160,5 +160,15 @@ describe('sass-graph', function(){
         });
       });
     });
+
+    describe('with exclusion pattern', function() {
+      it('should exclude all files matching the regular expression', function() {
+        graph({ exclude: /exclude-/ })
+          .fromFixtureFile('exclusion-pattern')
+          .assertDecendents([
+            'dont-exclude.scss',
+          ]);
+      });
+    });
   });
 });
