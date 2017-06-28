@@ -74,15 +74,15 @@ Graph.prototype.addFile = function(filepath, parent) {
   var i, resolved;
 
   if (this.globImports) {
+    let globbedImports = []
     for (i = 0; i < imports.length; i++) {
       for (var j = 0; j < loadPaths.length; j++) {
-        var results = glob.sync(imports[i], { cwd: loadPaths[j] });
-        if (results.length) {
-          imports.splice(i, 1);
-          imports = imports.concat(results);
-        }
+        globbedImports = globbedImports.concat(
+          glob.sync(imports[i], { cwd: loadPaths[j] })
+        )
       }
     }
+    imports = imports.concat(globbedImports)
   }
 
   for (i = 0; i < imports.length; i++) {
