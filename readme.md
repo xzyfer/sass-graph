@@ -82,7 +82,7 @@ Default: `false`
 
 Follow symbolic links.
 
-#### excludes
+#### exclude
 
 Type: `RegExp`
 Default: `undefined`
