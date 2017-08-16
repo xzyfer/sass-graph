@@ -15,7 +15,7 @@ Parses Sass files in a directory and exposes a graph of dependencies
 Install with [npm](https://npmjs.org/package/sass-graph)
 
 ```
-npm install --save-dev sass-graph
+npm install --save-dev sass-graph-glob
 ```
 
 ## Usage
