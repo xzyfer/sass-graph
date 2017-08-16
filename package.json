@@ -1,10 +1,10 @@
 {
-  "name": "sass-graph",
+  "name": "sass-graph-glob",
   "version": "2.2.4",
   "description": "Parse sass files and extract a graph of imports",
   "license": "MIT",
-  "repository": "xzyfer/sass-graph",
-  "author": "xzyfer",
+  "repository": "Iambecomeroot/sass-graph",
+  "author": "Iambecomeroot",
   "main": "sass-graph.js",
   "directories": {
     "bin": "./bin"

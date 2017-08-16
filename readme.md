@@ -1,4 +1,6 @@
-# Sass Graph
+# Sass Graph Glob
+
+A fork of [xzyfer/sass-graph](https://github.com/xzyfer/sass-graph) with support for [chriseppstein/sass-globbing](https://github.com/chriseppstein/sass-globbing).
 
 Parses Sass files in a directory and exposes a graph of dependencies
 
@@ -81,13 +83,6 @@ Type: `Boolean`
 Default: `false`
 
 Follow symbolic links.
-
-#### globImports
-
-Type: `Boolean`
-Default: `false`
-
-Glob imports. For example: `@import "./components/*";` would include anything from `./components/`.
 
 ## Example
 

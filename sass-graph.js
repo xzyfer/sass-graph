@@ -44,7 +44,6 @@ function Graph(options, dir) {
   this.extensions = options.extensions || [];
   this.index = {};
   this.follow = options.follow || false;
-  this.globImports = options.globImports || false;
   this.loadPaths = _(options.loadPaths).map(function(p) {
     return path.resolve(p);
   }).value();
@@ -73,17 +72,15 @@ Graph.prototype.addFile = function(filepath, parent) {
 
   var i, resolved;
 
-  if (this.globImports) {
-    let globbedImports = []
-    for (i = 0; i < imports.length; i++) {
-      for (var j = 0; j < loadPaths.length; j++) {
-        globbedImports = globbedImports.concat(
-          glob.sync(imports[i], { cwd: loadPaths[j] })
-        )
-      }
+  let globbedImports = []
+  for (i = 0; i < imports.length; i++) {
+    for (var j = 0; j < loadPaths.length; j++) {
+      globbedImports = globbedImports.concat(
+        glob.sync(imports[i], { cwd: loadPaths[j] })
+      )
     }
-    imports = imports.concat(globbedImports)
   }
+  imports = imports.concat(globbedImports)
 
   for (i = 0; i < imports.length; i++) {
     resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
