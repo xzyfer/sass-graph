@@ -3,7 +3,7 @@
   "version": "2.2.4",
   "description": "Parse sass files and extract a graph of imports",
   "license": "MIT",
-  "repository": "Iambecomeroot/sass-graph",
+  "repository": "Iambecomeroot/sass-graph-glob",
   "author": "Iambecomeroot",
   "main": "sass-graph.js",
   "directories": {
