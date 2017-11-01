@@ -41,9 +41,7 @@ var yargs = require('yargs')
       type: 'bool',
     })
 
-    .version(function() {
-      return require('../package').version;
-    })
+    .version()
     .alias('v', 'version')
 
     .help('h')
