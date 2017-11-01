@@ -30,6 +30,9 @@
     "mocha": "^3.2.0",
     "nyc": "^10.2.0"
   },
+  "engines": {
+    "node": ">= 4"
+  },
   "files": [
     "bin",
     "parse-imports.js",
