@@ -4,7 +4,8 @@ All notable changes to this project will be documented in this file.
 ## [next]
 ### BREAKING CHANGES
 
-- Drop support for io.js and Node.js < 4.
+- Drop support for io.js and Node.js < 4 (@realityking, #88)
+- Don't add .css imports to the graph by default (@xzyfer, #91)
 
 ### Features
 
@@ -14,7 +15,11 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 
-- yargs@^10.0.3
+- yargs@^10.0.3 (@realityking, #88)
+- chai@^4.1.2 (@realityking, #88)
+- coveralls@^3.0.0 (@realityking, #88)
+- mocha@^4.0.1 (@realityking, #88)
+- nyc@^11.2.1 (@realityking, #88)
 
 ## [2.2.4]
 ### Dependencies
