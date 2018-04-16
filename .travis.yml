@@ -1,8 +1,7 @@
 language: node_js
 branches: [master]
 node_js:
-  - "lts/argon"
   - "lts/boron"
   - "lts/carbon"
-  - "9"
+  - "current"
 after_success: npm run coverage
