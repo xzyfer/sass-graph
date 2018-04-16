@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- Add option to exclude files based on regular expression (@Iambecomeroot, #86)
+
 ### Fixes
 
 ### Tests
