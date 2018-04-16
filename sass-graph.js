@@ -42,6 +42,7 @@ function resolveSassPath(sassPath, loadPaths, extensions) {
 function Graph(options, dir) {
   this.dir = dir;
   this.extensions = options.extensions || [];
+  this.exclude = options.exclude instanceof RegExp ? options.exclude : null;
   this.index = {};
   this.follow = options.follow || false;
   this.loadPaths = _(options.loadPaths).map(function(p) {
@@ -58,6 +59,8 @@ function Graph(options, dir) {
 
 // add a sass file to the graph
 Graph.prototype.addFile = function(filepath, parent) {
+  if (this.exclude !== null && this.exclude.test(filepath)) return;
+
   var entry = this.index[filepath] = this.index[filepath] || {
     imports: [],
     importedBy: [],
@@ -74,6 +77,9 @@ Graph.prototype.addFile = function(filepath, parent) {
     loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
     resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
     if (!resolved) continue;
+
+    // check exclcude regex
+    if (this.exclude !== null && this.exclude.test(resolved)) continue;
 
     // recurse into dependencies if not already enumerated
     if (!_.includes(entry.imports, resolved)) {
@@ -92,7 +98,10 @@ Graph.prototype.addFile = function(filepath, parent) {
       resolvedParent = parent;
     }
 
-    entry.importedBy.push(resolvedParent);
+    // check exclcude regex
+    if (!(this.exclude !== null && this.exclude.test(resolvedParent))) {
+      entry.importedBy.push(resolvedParent);
+    }
   }
 };
 

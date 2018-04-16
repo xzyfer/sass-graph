@@ -3,3 +3,6 @@ output
 .sass-cache
 test.js
 .nyc_output
+*.swp
+package-lock.json
+
