@@ -58,11 +58,11 @@ if (['ancestors', 'descendents'].indexOf(argv._[0]) !== -1) {
   command = argv._.shift();
 }
 
-if (argv._ && path.extname(argv._[0]) === '') {
+if (argv._.length && path.extname(argv._[0]) === '') {
   directory = argv._.shift();
 }
 
-if (argv._ && path.extname(argv._[0])) {
+if (argv._.length && path.extname(argv._[0])) {
   file = argv._.shift();
 }
 
