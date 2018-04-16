@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 ## [next]
 ### BREAKING CHANGES
 
+### Features
+
+### Fixes
+
+### Tests
+
+### Dependencies
+
+## [3.0.0]
+### BREAKING CHANGES
+
 - Drop support Node < 6 (@realityking, #88, @xzyfer 3b2ec74)
 - Don't add .css imports to the graph by default (@xzyfer, #91)
 
@@ -14,8 +25,6 @@ All notable changes to this project will be documented in this file.
 ### Fixes
 
 - Fix broken bounds check in CLI (@xzyfer, 5dd065e)
-
-### Tests
 
 ### Dependencies
 
