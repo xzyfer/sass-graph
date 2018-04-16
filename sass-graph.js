@@ -132,7 +132,7 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 };
 
 function processOptions(options) {
-  return _.assign({
+  return Object.assign({
     loadPaths: [process.cwd()],
     extensions: ['scss', 'css', 'sass'],
   }, options);

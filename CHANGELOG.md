@@ -2,11 +2,19 @@
 All notable changes to this project will be documented in this file.
 
 ## [next]
+### BREAKING CHANGES
+
+- Drop support for io.js and Node.js < 4.
+
 ### Features
 
 ### Fixes
 
 ### Tests
+
+### Dependencies
+
+- yargs@^10.0.3
 
 ## [2.2.4]
 ### Dependencies
