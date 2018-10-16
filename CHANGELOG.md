@@ -12,6 +12,24 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 
+
+## [3.0.3]
+### Dependencies
+
+- yargs@^12.0.2 (@patricksmms, #97)
+- mocha@^5.2.0 (@patricksmms, #97)
+- nyc@^13.1.0 (@patricksmms, #97)
+
+## [3.0.2]
+### Dependencies
+
+- lodash@^4.17.11 (@patricksmms, #95)
+
+## [3.0.1]
+### Fixes
+
+- Add MIT license (@char0n, #93)
+
 ## [3.0.0]
 ### BREAKING CHANGES
 
