@@ -84,6 +84,13 @@ Default: `false`
 
 Follow symbolic links.
 
+#### exclude
+
+Type: `RegExp`
+Default: `undefined`
+
+Exclude files matching regular expression.
+
 ## Example
 
 ```js

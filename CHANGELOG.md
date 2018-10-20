@@ -2,11 +2,56 @@
 All notable changes to this project will be documented in this file.
 
 ## [next]
+### BREAKING CHANGES
+
 ### Features
 
 ### Fixes
 
 ### Tests
+
+### Dependencies
+
+
+## [3.0.3]
+### Dependencies
+
+- yargs@^12.0.2 (@patricksmms, #97)
+- mocha@^5.2.0 (@patricksmms, #97)
+- nyc@^13.1.0 (@patricksmms, #97)
+
+## [3.0.2]
+### Dependencies
+
+- lodash@^4.17.11 (@patricksmms, #95)
+
+## [3.0.1]
+### Fixes
+
+- Add MIT license (@char0n, #93)
+
+## [3.0.0]
+### BREAKING CHANGES
+
+- Drop support Node < 6 (@realityking, #88, @xzyfer 3b2ec74)
+- Don't add .css imports to the graph by default (@xzyfer, #91)
+
+### Features
+
+- Add option to exclude files based on regular expression (@Iambecomeroot, #86)
+
+### Fixes
+
+- Fix broken bounds check in CLI (@xzyfer, 5dd065e)
+
+### Dependencies
+
+- yargs@^10.0.3 (@realityking, #88)
+- chai@^4.1.2 (@realityking, #88)
+- coveralls@^3.0.0 (@realityking, #88)
+- mocha@^4.0.1 (@realityking, #88)
+- nyc@^11.2.1 (@realityking, #88)
+- scss-tokenizer@^0.3.0 (@xzyfer, 3b2ec74)
 
 ## [2.2.4]
 ### Dependencies
