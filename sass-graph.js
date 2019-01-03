@@ -123,7 +123,9 @@ Graph.prototype.visitDescendents = function(filepath, callback) {
 
 // a generic visitor that uses an edgeCallback to find the edges to traverse for a node
 Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
-  filepath = fs.realpathSync(filepath);
+  if (!path.isAbsolute(filepath)) {
+    filepath = fs.realpathSync(filepath);
+  }
   var visited = visited || [];
   if (!this.index.hasOwnProperty(filepath)) {
     edgeCallback('Graph doesn\'t contain ' + filepath, null);
