@@ -52,7 +52,9 @@ function Graph(options, dir) {
   if (dir) {
     var graph = this;
     _.each(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true, follow: this.follow }), function(file) {
-      graph.addFile(path.resolve(file));
+      try {
+        graph.addFile(path.resolve(file));
+      } catch (e) {}
     });
   }
 }
