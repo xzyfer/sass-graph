@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 
+## [3.0.4]
+### Fixes
+
+- don't crash on non-atomic saves (@adnelson, #101)
 
 ## [3.0.3]
 ### Dependencies
