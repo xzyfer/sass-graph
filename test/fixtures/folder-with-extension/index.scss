@@ -1,3 +1,8 @@
+@use 'nested.scss';
+@use '_nested.scss';
+@use 'nested.scss/leaf';
+@use '_nested.scss/leaf';
+
 @import 'nested.scss';
 @import '_nested.scss';
 @import 'nested.scss/leaf';
