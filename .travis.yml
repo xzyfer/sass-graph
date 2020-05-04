@@ -1,5 +1,4 @@
 language: node_js
-branches: [v2]
 node_js:
   - 0.10
   - 0.11
