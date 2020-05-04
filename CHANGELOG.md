@@ -12,6 +12,20 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 
+## [3.0.5]
+### Fixes
+
+- Remove .css from default extensions in readme.md (@dosentmatter, #106)
+- Expand Travis CI test matrix (@xzyfer)
+
+### Tests
+
+- Test yargs version support in CI  (@xzyfer)
+
+### Dependencies
+
+- Bump yargs@^13.3.2 (@xzyfer, #108)
+
 ## [3.0.4]
 ### Fixes
 
