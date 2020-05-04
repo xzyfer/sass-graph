@@ -15,4 +15,5 @@ node_js:
   - 12
   - 13
   - 14
+before_script: ./bin/sassgraph descendents test/fixtures test/fixtures/simple/index.scss
 after_success: npm run coverage
