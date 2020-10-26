@@ -3,7 +3,6 @@
 var fs = require('fs');
 var path = require('path');
 var includes = require('lodash/includes');
-var each = require('lodash/each');
 var intersection = require('lodash/intersection');
 var uniq = require('lodash/uniq');
 var filter = require('lodash/filter');
@@ -55,7 +54,7 @@ function Graph(options, dir) {
 
   if (dir) {
     var graph = this;
-    each(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true, follow: this.follow }), function(file) {
+    glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true, follow: this.follow }).forEach(function(file) {
       try {
         graph.addFile(path.resolve(file));
       } catch (e) {}
