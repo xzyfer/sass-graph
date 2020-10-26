@@ -5,9 +5,12 @@ var path = require('path');
 var includes = require('lodash/includes');
 var intersection = require('lodash/intersection');
 var uniq = require('lodash/uniq');
-var filter = require('lodash/filter');
 var glob = require('glob');
 var parseImports = require('./parse-imports');
+
+function identity (value) {
+  return value;
+}
 
 // resolve a sass module to a path
 function resolveSassPath(sassPath, loadPaths, extensions) {
@@ -79,7 +82,7 @@ Graph.prototype.addFile = function(filepath, parent) {
 
   var i, length = imports.length, loadPaths, resolved;
   for (i = 0; i < length; i++) {
-    loadPaths = uniq(filter([cwd, this.dir].concat(this.loadPaths)));
+    loadPaths = uniq([cwd, this.dir].concat(this.loadPaths).filter(identity));
     resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
     if (!resolved) continue;
 
