@@ -5,7 +5,6 @@ var path = require('path');
 var includes = require('lodash/includes');
 var each = require('lodash/each');
 var intersection = require('lodash/intersection');
-var map = require('lodash/map');
 var uniq = require('lodash/uniq');
 var filter = require('lodash/filter');
 var concat = require('lodash/concat');
@@ -51,7 +50,7 @@ function Graph(options, dir) {
   this.exclude = options.exclude instanceof RegExp ? options.exclude : null;
   this.index = {};
   this.follow = options.follow || false;
-  this.loadPaths = map(options.loadPaths, function(p) {
+  this.loadPaths = (options.loadPaths || []).map(function(p) {
     return path.resolve(p);
   });
 
