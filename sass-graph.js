@@ -7,7 +7,6 @@ var each = require('lodash/each');
 var intersection = require('lodash/intersection');
 var uniq = require('lodash/uniq');
 var filter = require('lodash/filter');
-var concat = require('lodash/concat');
 var glob = require('glob');
 var parseImports = require('./parse-imports');
 
@@ -81,7 +80,7 @@ Graph.prototype.addFile = function(filepath, parent) {
 
   var i, length = imports.length, loadPaths, resolved;
   for (i = 0; i < length; i++) {
-    loadPaths = uniq(filter(concat([cwd, this.dir], this.loadPaths)));
+    loadPaths = uniq(filter([cwd, this.dir].concat(this.loadPaths)));
     resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
     if (!resolved) continue;
 
