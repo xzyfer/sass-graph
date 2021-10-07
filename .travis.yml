@@ -1,11 +1,10 @@
 language: node_js
 branches: [master]
 node_js:
+  - 16
+  - 15
   - 14
   - 13
   - 12
-  - 10
-  - 8
-  - 6
 before_script: ./bin/sassgraph descendents test/fixtures test/fixtures/simple/index.scss
 after_success: npm run coverage
