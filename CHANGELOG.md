@@ -12,6 +12,11 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 
+## [4.0.0]
+### BREAKING CHANGES
+
+- Bump yargs@^17.2.1 (@kiskoza, #117)
+
 ## [3.0.5]
 ### Fixes
 
