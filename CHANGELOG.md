@@ -12,6 +12,11 @@ All notable changes to this project will be documented in this file.
 
 ### Dependencies
 
+## [4.0.1]
+### Dependencies
+
+- Bump scss-tokenizer@^0.4.3 (@Ohiekkar, #149)
+
 ## [4.0.0]
 ### BREAKING CHANGES
 
