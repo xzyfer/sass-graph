@@ -15,7 +15,7 @@ function parseImports(content, isIndentedSyntax) {
     if (inImport && !inParen && token[0] === 'string') {
       results.push(token[1]);
     }
-    else if (token[1] === 'import' && prevToken[1] === '@') {
+    else if ((token[1] === 'import' || token[1] === 'use') && prevToken[1] === '@') {
       if (inImport && !isIndentedSyntax) {
         throw new Error('Encountered invalid @import syntax.');
       }

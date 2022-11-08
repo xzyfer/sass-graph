@@ -1,3 +1,8 @@
+@use 'no-such-file';
+@use 'no-such-file.css';
+@use 'no-such-file.scss';
+@use 'http://no-such-file.com';
+
 @import 'no-such-file';
 @import 'no-such-file.css';
 @import 'no-such-file.scss';
