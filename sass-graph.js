@@ -2,9 +2,15 @@
 
 var fs = require('fs');
 var path = require('path');
-var _ = require('lodash');
+var includes = require('lodash/includes');
+var intersection = require('lodash/intersection');
+var uniq = require('lodash/uniq');
 var glob = require('glob');
 var parseImports = require('./parse-imports');
+
+function identity (value) {
+  return value;
+}
 
 // resolve a sass module to a path
 function resolveSassPath(sassPath, loadPaths, extensions) {
@@ -45,13 +51,13 @@ function Graph(options, dir) {
   this.exclude = options.exclude instanceof RegExp ? options.exclude : null;
   this.index = {};
   this.follow = options.follow || false;
-  this.loadPaths = _(options.loadPaths).map(function(p) {
+  this.loadPaths = (options.loadPaths || []).map(function(p) {
     return path.resolve(p);
-  }).value();
+  });
 
   if (dir) {
     var graph = this;
-    _.each(glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true, follow: this.follow }), function(file) {
+    glob.sync(dir+'/**/*.@('+this.extensions.join('|')+')', { dot: true, nodir: true, follow: this.follow }).forEach(function(file) {
       try {
         graph.addFile(path.resolve(file));
       } catch (e) {}
@@ -76,7 +82,7 @@ Graph.prototype.addFile = function(filepath, parent) {
 
   var i, length = imports.length, loadPaths, resolved;
   for (i = 0; i < length; i++) {
-    loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
+    loadPaths = uniq([cwd, this.dir].concat(this.loadPaths).filter(identity));
     resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
     if (!resolved) continue;
 
@@ -84,7 +90,7 @@ Graph.prototype.addFile = function(filepath, parent) {
     if (this.exclude !== null && this.exclude.test(resolved)) continue;
 
     // recurse into dependencies if not already enumerated
-    if (!_.includes(entry.imports, resolved)) {
+    if (!includes(entry.imports, resolved)) {
       entry.imports.push(resolved);
       this.addFile(fs.realpathSync(resolved), filepath);
     }
@@ -92,7 +98,7 @@ Graph.prototype.addFile = function(filepath, parent) {
 
   // add link back to parent
   if (parent) {
-    resolvedParent = _(parent).intersection(this.loadPaths).value();
+    resolvedParent =  intersection(parent, this.loadPaths);
 
     if (resolvedParent) {
       resolvedParent = parent.substr(parent.indexOf(resolvedParent));
@@ -134,7 +140,7 @@ Graph.prototype.visit = function(filepath, callback, edgeCallback, visited) {
 
   var i, length = edges.length;
   for (i = 0; i < length; i++) {
-    if (!_.includes(visited, edges[i])) {
+    if (!includes(visited, edges[i])) {
       visited.push(edges[i]);
       callback(edges[i], this.index[edges[i]]);
       this.visit(edges[i], callback, edgeCallback, visited);
