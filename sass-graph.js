@@ -7,7 +7,7 @@ var glob = require('glob');
 var parseImports = require('./parse-imports');
 
 // resolve a sass module to a path
-function resolveSassPath(sassPath, loadPaths, extensions) {
+function resolveSassPath(sassPath, loadPaths, extensions, foundedPaths) {
   // trim sass file extensions
   var re = new RegExp('(\.('+extensions.join('|')+'))$', 'i');
   var sassPathName = sassPath.replace(re, '');
@@ -15,9 +15,14 @@ function resolveSassPath(sassPath, loadPaths, extensions) {
   var i, j, length = loadPaths.length, scssPath, partialPath;
   for (i = 0; i < length; i++) {
     for (j = 0; j < extensions.length; j++) {
-      scssPath = path.normalize(loadPaths[i] + '/' + sassPathName + '.' + extensions[j]);
+      var loadPath = loadPaths[i];
+      scssPath = path.normalize(loadPath + '/' + sassPathName + '.' + extensions[j]);
       try {
         if (fs.lstatSync(scssPath).isFile()) {
+          var sassFileDir = path.normalize(loadPath + '/');
+          if (foundedPaths.indexOf(sassFileDir) === -1) {
+            foundedPaths.push(sassFileDir);
+          }
           return scssPath;
         }
       } catch (e) {}
@@ -48,6 +53,7 @@ function Graph(options, dir) {
   this.loadPaths = _(options.loadPaths).map(function(p) {
     return path.resolve(p);
   }).value();
+  this.foundedPaths = [];
 
   if (dir) {
     var graph = this;
@@ -77,7 +83,7 @@ Graph.prototype.addFile = function(filepath, parent) {
   var i, length = imports.length, loadPaths, resolved;
   for (i = 0; i < length; i++) {
     loadPaths = _([cwd, this.dir]).concat(this.loadPaths).filter().uniq().value();
-    resolved = resolveSassPath(imports[i], loadPaths, this.extensions);
+    resolved = resolveSassPath(imports[i], loadPaths, this.extensions, this.foundedPaths);
     if (!resolved) continue;
 
     // check exclcude regex
